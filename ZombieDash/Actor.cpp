@@ -353,10 +353,27 @@ void Zombie::doSomething()
     }
     //Step 3: Direction + compute vomit coordinates
     //Step 4: Movement Plan (will be DIFFERENT for dumb and smart zombie)
-    movementPlan();
+    if(m_planDistance == 0)
+        movementPlan(); //set new movement plan
     
     //Step 5: destination coordinate
+    double tempX = getX();
+    double tempY = getY();
+    if(getDirection() == right)
+        tempX += 1; //add a pixel
+    if(getDirection() == left)
+        tempX -= 1;
+    if(getDirection() == up)
+        tempY -= 1;
+    if(getDirection() == down)
+        tempY += 1;
+    
     //Step 6: check bounding box and update location if applicable
+    if(getStud()->open(this, tempX, tempY)) //FIX
+    {
+        moveTo(tempX, tempY);
+        m_planDistance--;
+    }
     //Step 7: can't actually move case
 }
 
@@ -426,6 +443,17 @@ DumbZombie::~DumbZombie()
 
 void DumbZombie::movementPlan()
 {
+    int newMove = randInt(3, 10);
+    setPlanDistance(newMove);
+    int newDirection = randInt(1,4);
+    if(newDirection == 1)
+        setDirection(right);
+    if(newDirection == 2)
+        setDirection(left);
+    if(newDirection == 3)
+        setDirection(up);
+    if(newDirection == 4)
+        setDirection(down);
     
 }
 
