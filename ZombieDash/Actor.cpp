@@ -315,8 +315,84 @@ void LandmineGoodie::increaseGoodie()
 {
     (getStud()->getPenelope())->addMines(2);
 }
+//Bad Things: aka Vomit, Pit, Flames
+//Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
 
+BadThings::BadThings(StudentWorld *stud, double locX, double locY, int imgid)
+:Actor(stud, locX, locY, imgid, 2, right, 0, 1, false)
+{
+     m_currentTick = 0;
+}
 
+void BadThings::doSomething()
+{
+    
+}
+void BadThings::startTick()
+{
+   // return m_currentTick;
+    m_currentTick = (getStud())->getTicks();
+}
+int BadThings::getCurrentTick() const
+{
+    return m_currentTick;
+}
+
+Pit::Pit(StudentWorld *stud, double locX, double locY)
+:BadThings(stud, locX, locY, IID_PIT)
+{
+    
+}
+
+void Pit::doSomething()
+{
+    
+}
+
+Vomit::Vomit(StudentWorld *stud, double locX, double locY)
+:BadThings(stud, locX, locY, IID_VOMIT)
+{
+   
+}
+
+void Vomit::doSomething()
+{
+    if(isAlive() == 1) //vomit is already dead
+        return;
+    //set the currentTick if not already
+    if(getCurrentTick() == 0)
+        startTick();
+    //check if there has been 2 ticks since creation
+    if(getStud()->getTicks() - getCurrentTick() == 2)
+    {
+        //set state to dead
+        setDead();
+        return;
+    }
+        
+}
+
+Flames::Flames(StudentWorld *stud, double locX, double locY)
+:BadThings(stud, locX, locY, IID_FLAME)
+{
+    
+}
+
+void Flames::doSomething()
+{
+    if(isAlive() == 1) //flame is already dead
+        return;
+    //set the currentTick if not already
+    if(getCurrentTick() == 0)
+        startTick();
+    //check if there has been 2 ticks since creation
+    if(getStud()->getTicks() - getCurrentTick() == 2)
+    {
+        //set state to dead
+        setDead();
+        return;
+    }
+}
 
 //ZOMBIE TIME YAY===========================================================
 //Actor(StudentWorld *stud, int locX, int locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
@@ -446,7 +522,7 @@ DumbZombie::~DumbZombie()
 
 void DumbZombie::movementPlan()
 {
-    std::cout << "found new movement plan " << std::endl;
+   // std::cout << "found new movement plan " << std::endl;
     int newMove = randInt(3, 10);
     setPlanDistance(newMove);
     int newDirection = randInt(1,4);

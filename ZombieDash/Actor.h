@@ -139,7 +139,41 @@ public:
 private:
     virtual void increaseGoodie();
 };
+//Bad Things: aka pits, vomit, flames
+class BadThings: public Actor
+{
+    //Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
+public:
+    BadThings(StudentWorld *stud, double locX, double locY, int imgid);
+    virtual void doSomething();
+    virtual void startTick();
+    int getCurrentTick() const;
+private:
+    int m_currentTick;
+};
 
+class Pit: public BadThings
+{
+public:
+    Pit(StudentWorld *stud, double locX, double locY);
+    virtual void doSomething();
+    
+};
+
+class Vomit: public BadThings
+{
+public:
+    Vomit(StudentWorld *stud, double locX, double locY);
+    virtual void doSomething();
+   
+};
+
+class Flames: public BadThings
+{
+public:
+    Flames(StudentWorld *stud, double locX, double locY);
+    virtual void doSomething();
+};
 //======ZOMBIES YAYYY===
 //Actor(StudentWorld *stud, int locX, int locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
 class Zombie: public Actor
