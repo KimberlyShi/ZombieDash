@@ -71,9 +71,9 @@ int StudentWorld::init()
                     case Level::dumb_zombie:
                         actor.push_back(new DumbZombie(this, i*16, j*16));
                         break;
-                    case Level::smart_zombie:
-                        actor.push_back(new DumbZombie(this, i*16, j*16));
-                        break;
+//                    case Level::smart_zombie:
+//                        actor.push_back(new DumbZombie(this, i*16, j*16));
+//                        break;
                     default:
                         break;
                 }

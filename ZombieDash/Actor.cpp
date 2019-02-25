@@ -332,25 +332,25 @@ Zombie::~Zombie()
 
 void Zombie::doSomething()
 {
+    
+    //PROBLEM: zombies are moving super slow
+    
+    
     //Step 1: check if alive
     if(isAlive() == 1) //not alive
     {
         return;
     }
-    else
-    {
+   
          //Step 2: Paralyzed
         if(getStud()->getTicks() % 2 == 0) //even tick
         {
             return; //paralyzed
         }
-        else
-        {
+    
             double tempVomitX = vomitX();
             double tempVomitY = vomitY();
-        }
-     
-    }
+    
     //Step 3: Direction + compute vomit coordinates
     //Step 4: Movement Plan (will be DIFFERENT for dumb and smart zombie)
     if(m_planDistance == 0)
@@ -364,9 +364,9 @@ void Zombie::doSomething()
     if(getDirection() == left)
         tempX -= 1;
     if(getDirection() == up)
-        tempY -= 1;
-    if(getDirection() == down)
         tempY += 1;
+    if(getDirection() == down)
+        tempY -= 1;
     
     //Step 6: check bounding box and update location if applicable
     if(getStud()->open(this, tempX, tempY)) //FIX
@@ -374,7 +374,10 @@ void Zombie::doSomething()
         moveTo(tempX, tempY);
         m_planDistance--;
     }
-    //Step 7: can't actually move case
+      //Step 7: can't actually move case
+    else //bounding box is overlapped so need to pick new direction
+        m_planDistance = 0;
+  
 }
 
 //accessor
@@ -421,7 +424,7 @@ double Zombie::vomitY()
 
 void Zombie::setPlanDistance(int set)
 {
-
+    m_planDistance = set;
 }
 
 void Zombie::movementPlan()
@@ -443,6 +446,7 @@ DumbZombie::~DumbZombie()
 
 void DumbZombie::movementPlan()
 {
+    std::cout << "found new movement plan " << std::endl;
     int newMove = randInt(3, 10);
     setPlanDistance(newMove);
     int newDirection = randInt(1,4);
