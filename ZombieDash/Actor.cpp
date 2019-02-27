@@ -89,19 +89,48 @@ StudentWorld *Actor::getStud() const
 }
 
 //=========PENELOPE
-Penelope::Penelope(StudentWorld *stud, double locX, double locY)
-:Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
+Human::Human(StudentWorld *stud, double locX, double locY, int imgid)
+:Actor(stud, locX, locY, imgid,2,right, 0, 1, true, false)
 {
     m_infectStat = false; //infection status starts off as false
     m_infectCount = 0; //infection count is 0
+
+    setFlameCanDamage(true); //can be damaged by flames
+    setActivation(); //can activate landmines
+}
+
+bool Human::getInfectStat() const
+{
+    return m_infectStat;
+}
+int Human::getInfectCount() const
+{
+    return m_infectCount;
+}
+
+void Human::increaseInfectCount()
+{
+    m_infectCount++;
+}
+
+void Human::setInfectStat(bool val)
+{
+    m_infectStat = val;
+}
+Penelope::Penelope(StudentWorld *stud, double locX, double locY)
+//:Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
+:Human(stud, locX, locY, IID_PLAYER)
+{
+//    m_infectStat = false; //infection status starts off as false
+//    m_infectCount = 0; //infection count is 0
     m_vaccines = 0;
     m_mines = 0;
     m_flames = 0;
     keyVal = 0;
     posNeg = 0;
     m_dir = right;
-    setFlameCanDamage(true); //can be damaged by flames
-    setActivation(); //can activate landmines
+//    setFlameCanDamage(true); //can be damaged by flames
+//    setActivation(); //can activate landmines
 }
 
 Penelope::~Penelope()
@@ -109,14 +138,14 @@ Penelope::~Penelope()
     
 }
 //Penelope's Accessors
-bool Penelope::getInfectStat() const
-{
-    return m_infectStat;
-}
-int Penelope::getInfectCount() const
-{
-    return m_infectCount;
-}
+//bool Penelope::getInfectStat() const
+//{
+//    return m_infectStat;
+//}
+//int Penelope::getInfectCount() const
+//{
+//    return m_infectCount;
+//}
 
 int Penelope::getVaccines() const
 {
@@ -159,7 +188,8 @@ void Penelope::doSomething()
     if(getInfectStat() == true) //if she's infected
     {
         //she's infected so increase infection count
-        m_infectCount++;
+        increaseInfectCount();
+        //m_infectCount++;
         if(getInfectCount() >= 500)
         {
             //becomes a zombie
@@ -282,7 +312,8 @@ void Penelope::doSomething()
                 if(getVaccines() >= 1)
                 {
                     //set infected status to false
-                    m_infectStat = false;
+                    setInfectStat(false);
+                    //m_infectStat = false;
                     m_vaccines--;
                 }
                 break;

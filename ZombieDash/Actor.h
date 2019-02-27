@@ -50,9 +50,24 @@ private:
     bool m_flameCanDamage;
     bool m_canActivateMine;
 };
-
+//====HUMAN===
+class Human: public Actor
+{
+public:
+    //Penelope::Penelope(StudentWorld *stud, double locX, double locY)
+   // :Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
+    Human(StudentWorld *stud, double locX, double locY, int imgid);
+    bool getInfectStat() const;
+    int getInfectCount() const;
+    void increaseInfectCount();
+    void setInfectStat(bool val);
+    
+private:
+    bool m_infectStat;
+    int m_infectCount;
+};
 //======PENLEOPE=============
-class Penelope: public Actor
+class Penelope: public Human
 {
 public:
     Penelope(StudentWorld *stud, double locX, double locY);
@@ -61,8 +76,8 @@ public:
     virtual void doSomething();
     
     //accessor
-    bool getInfectStat() const;
-    int getInfectCount() const;
+//    bool getInfectStat() const;
+//    int getInfectCount() const;
     int getVaccines() const;
     int getMines() const;
     int getFlames() const;
@@ -82,8 +97,8 @@ public:
     //will NOT reset score
     
 private:
-    bool m_infectStat;
-    int m_infectCount;
+//    bool m_infectStat;
+//    int m_infectCount;
     int m_vaccines;
     int m_mines;
     int m_flames;
