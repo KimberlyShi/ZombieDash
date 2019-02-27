@@ -94,7 +94,7 @@ int StudentWorld::init()
 
 int StudentWorld::move()
 {
-     setGameStatText(statusLine());
+    
     m_numTicks++;
     // This code is here merely to allow the game to build, run, and terminate after you hit enter.
     // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
@@ -108,11 +108,12 @@ int StudentWorld::move()
             return GWSTATUS_FINISHED_LEVEL;
         }
 
-//        if(!m_penelope->isAlive()) //penelope is no longer alive
-//        {
-//            decLives();
-//            return GWSTATUS_PLAYER_DIED;
-//        }
+        if(!m_penelope->isAlive()) //penelope is no longer alive
+        {
+            decLives();
+            return GWSTATUS_PLAYER_DIED;
+        }
+        setGameStatText(statusLine());
     }
     
     cleanDead();
@@ -231,53 +232,6 @@ string StudentWorld::statusLine()
 
 bool StudentWorld::open(Actor *sprite2, double x, double y)
 {
-    //getX and getY give center!!
-    //check if there's already a something in that position
-    
-    //numbers refer to coordinates below
-    //second refers to the second sprite (the one passed in)
-    // 4    3
-    // 1    2
-    //    double second1x = x - (*sprite2).getSpriteWidth()/2 - 1;
-    //    double second1y = y - (*sprite2).getSpriteHeight()/2 - 1;
-    //    double second2x =  x + (*sprite2).getSpriteWidth()/2 - 1;
-    //    double second3y =  y + (*sprite2).getSpriteHeight()/2 - 1;
-    //
-    //    vector<Actor*>::iterator it = actor.begin();
-    //    while(it != actor.end())
-    //    {
-    //        //first refers to sprite1 bounding box
-    //        //second refers to sprite2 bounding box
-    //        double first1x = (*it) ->getX() - (*it)->getSpriteWidth()/2 - 1;
-    //        double first1y = (*it) ->getY() - (*it)->getSpriteHeight()/2 - 1;
-    //        double first2x = first1x + (*it)->getSpriteWidth() - 1;
-    //        double first3y = first1y + (*it)->getSpriteHeight() -1;
-    //
-    //
-    //        for(int i = first1x; i < first2x; i++) //width of sprite 1
-    //        {
-    //            for(int j = first1y; j < first3y; j++) //height of sprite 1
-    //            {
-    //                //check if it's equal to any of the coordinates of sprite 2
-    //                for(int k = second1x; k < second2x; k++) //width of sprite 2
-    //                {
-    //                    for(int r = second1y; r < second3y; r++) //height of sprite 2
-    //                    {
-    //                        if(sprite2 != *it && (*it)->getCanBlock() == true)
-    //                        {
-    //                            if(i == k && j == r)
-    //                                return false;
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //
-    //        it++;
-    //    }
-    //    return true;
-    // 4    3
-    // 1    2
     double firstxMin = x;
     double firstxMax = firstxMin + SPRITE_WIDTH - 1;
     double firstyMin = y;
@@ -303,7 +257,6 @@ bool StudentWorld::open(Actor *sprite2, double x, double y)
                 //part b
                 if(firstyMax >= secondyMin && firstyMax <= secondyMax)
                     return false;
-                
             }
             
             
@@ -318,8 +271,6 @@ bool StudentWorld::open(Actor *sprite2, double x, double y)
                 if(firstyMax >= secondyMin && firstyMax <= secondyMax)
                     return false;
             }
-            
-            
         }
         it++;
         
@@ -336,12 +287,9 @@ bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
     const double y1 = (*sprite1).getY() + SPRITE_HEIGHT/2 -1;
     const double x2 = (*sprite2).getX() + SPRITE_WIDTH/2 -1;
     const double y2 = (*sprite2).getY() + SPRITE_HEIGHT/2 -1;
-    
     const double differenceX = x1 - x2;
     const double differenceY = y1 - y2;
-    
-//    cout << "DIFFERENCE X: " << differenceX << endl;
-//    cout << "DIFFERENCE Y: " << differenceY << endl;
+
     //(∆x)2 + (∆y)2 ≤ 10 //that means that there was overlap
     if(((differenceX * differenceX) + (differenceY * differenceY)) <= 10*10) //does overlap
         return true;
@@ -360,7 +308,6 @@ bool StudentWorld::overlapLandmine(Actor *mine)
                 return true;
         }
     }
-    
     return false;
 }
 
@@ -399,13 +346,9 @@ void StudentWorld::flameDamages(Actor *flame)
                  //landmines -- NOT implemented
                  
                  (*it)->setDead(); //right now, working for goodies
-                 
-                
-                 
+    
                  
              }
-           
        }
-        
     }
 }
