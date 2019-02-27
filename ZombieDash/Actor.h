@@ -12,7 +12,7 @@ class StudentWorld;
 class Actor: public GraphObject
 {
 public:
-    Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
+    Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock, bool canBlockFlames);
     
     virtual void doSomething() = 0;
     virtual ~Actor();
@@ -24,6 +24,7 @@ public:
     double getSpriteHeight() const;
     bool getCanBlock() const;
     bool finishedLevel() const; //true indicates that Penelope finished
+    bool canBlockFlames() const; //only wall or exit can block flames, true if can block
     
     //mutators
     void setDead();
@@ -37,6 +38,7 @@ private:
     int m_status; //2-alive 1-dead 0-not applicable ex. wall, exit
     bool m_canBlock; //true if the object can be blocked (penelope can't run into)
     bool m_levelStatus;
+    bool m_canBlockFlames;
 };
 
 //======PENLEOPE=============
@@ -54,6 +56,7 @@ public:
     int getVaccines() const;
     int getMines() const;
     int getFlames() const;
+
     
     //mutators
     void moveX(int posNeg);
@@ -144,7 +147,7 @@ class BadThings: public Actor
 {
     //Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
 public:
-    BadThings(StudentWorld *stud, double locX, double locY, int imgid);
+    BadThings(StudentWorld *stud, double locX, double locY, int imgid, Direction dir);
     virtual void doSomething();
     virtual void startTick();
     int getCurrentTick() const;
@@ -163,7 +166,7 @@ public:
 class Vomit: public BadThings
 {
 public:
-    Vomit(StudentWorld *stud, double locX, double locY);
+    Vomit(StudentWorld *stud, double locX, double locY, Direction dir);
     virtual void doSomething();
    
 };
@@ -171,7 +174,7 @@ public:
 class Flames: public BadThings
 {
 public:
-    Flames(StudentWorld *stud, double locX, double locY);
+    Flames(StudentWorld *stud, double locX, double locY, Direction dir);
     virtual void doSomething();
 };
 //======ZOMBIES YAYYY===

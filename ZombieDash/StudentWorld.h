@@ -20,7 +20,11 @@ public:
     bool open(Actor *sprite2, double x, double y); //check if proposed spot is open
     bool boundingBox(Actor *sprite1, Actor *sprite2);
     bool overlap(Actor *sprite1, Actor *sprite2); //check if the object is overlapping
+    //overlap will return true if there is overlap
+    
+    bool overlapFlames(Actor *posFlame); //return true if there is overlap
     void cleanDead();
+    void addActor(Actor *sprite); //add the actor to the list
     
     std::string findLevel(int level);
     std::string statusLine();

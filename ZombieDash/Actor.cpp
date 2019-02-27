@@ -4,13 +4,14 @@
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
 //Actor base class implementation
-Actor::Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock)
+Actor::Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock, bool canBlockFlames)
 :GraphObject(imgid, locX, locY, dir, depth, size)
 {
     m_status = statAlive;
     m_stud = stud;
     m_canBlock = canBlock;
     m_levelStatus = false;
+    m_canBlockFlames = canBlockFlames;
 };
 Actor::~Actor()
 {
@@ -35,6 +36,11 @@ double Actor::getSpriteHeight() const
 bool Actor::getCanBlock() const
 {
     return m_canBlock;
+}
+
+bool Actor::canBlockFlames() const
+{
+    return m_canBlockFlames;
 }
 
 bool Actor::finishedLevel() const
@@ -64,7 +70,7 @@ StudentWorld *Actor::getStud() const
 
 //=========PENELOPE
 Penelope::Penelope(StudentWorld *stud, double locX, double locY)
-:Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true)
+:Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
 {
     m_infectStat = false; //infection status starts off as false
     m_infectCount = 0; //infection count is 0
@@ -142,33 +148,97 @@ void Penelope::doSomething()
         switch(keyVal)
         {
             case KEY_PRESS_UP:
+            {
                 setDirection(up);
                 x = getX();
                 y = getY() + 4;
                 if(isValid(x,y))
                     moveTo(x,y);
                 break;
+            }
             case KEY_PRESS_DOWN:
+            {
                 setDirection(down);
                 x = getX();
                 y = getY() - 4;
                 if(isValid(x,y))
                     moveTo(x,y);
                 break;
+            }
             case KEY_PRESS_LEFT:
+            {
                 setDirection(left);
                 x = getX() - 4;
                 y = getY();
                 if(isValid(x,y))
                     moveTo(x,y);
                 break;
+            }
             case KEY_PRESS_RIGHT:
+            {
                 setDirection(right);
                 x = getX() + 4;
                 y = getY();
                 if(isValid(x,y))
                     moveTo(x,y);
                 break;
+            }
+            case KEY_PRESS_SPACE: //flamethrower
+            {
+                if(getFlames() >= 1) //has flames
+                {
+                    m_flames--;
+                    getStud()->playSound(SOUND_PLAYER_FIRE);
+                    
+                    
+                    int count = 1;
+                    while(count <= 3) //1,2,3
+                    {
+                        //add 3 flames in front
+                        double tempX = 0.0; //possible location of flame
+                        double tempY = 0.0;
+                        
+                        if(getDirection() == up)
+                        {
+                            tempX = getX();
+                            tempY = getY() + count * SPRITE_HEIGHT;
+                        }
+                        if(getDirection() == down)
+                        {
+                            tempX = getX();
+                            tempY = getY() - count * SPRITE_HEIGHT;
+                        }
+                        if(getDirection() == left)
+                        {
+                            tempX = getX() - count *SPRITE_WIDTH;
+                            tempY = getY();
+                        }
+                        if(getDirection() == right)
+                        {
+                            tempX = getX() + count *SPRITE_WIDTH;
+                            tempY = getY();
+                        }
+                        //check if that temp location will overlap with wall or exit
+                        //first create the new flames object
+                        Flames *newFlame = new Flames(getStud(), tempX, tempY, getDirection());
+                        //check if it will overlap
+                      //  std::cout << "COUNTTT: " << count << " X: " << tempX << " Y: " << tempY << std::endl;
+                        if(getStud()->overlapFlames(newFlame))//there was overlap
+                        {
+                           // std::cout<< "COUNT " << count << std::endl;
+                            delete newFlame; //make sure to delete that newFlame if not pushed
+                            break;
+                        }
+                        else
+                        {
+                        //there was no overlap so push onto the list
+                        getStud()->addActor(newFlame);
+                        count++;
+                        }
+                    }
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -189,7 +259,7 @@ bool Penelope::isValid(double x, double y)
 
 //=========WAll
 Wall::Wall(StudentWorld * stud, double locX, double locY)
-:Actor(stud, locX, locY, IID_WALL, 0, right, 0, 1, true)
+:Actor(stud, locX, locY, IID_WALL, 0, right, 0, 1, true, true)
 {
 }
 
@@ -206,7 +276,7 @@ void Wall::doSomething()
 //=========EXIT
 
 Exit::Exit(StudentWorld* stud,double locX, double locY)
-:Actor(stud, locX, locY, IID_EXIT, 0, right, 1, 1, false)
+:Actor(stud, locX, locY, IID_EXIT, 0, right, 1, 1, false, true)
 {
 }
 
@@ -232,7 +302,7 @@ void Exit::doSomething()
 
 //======GOODIES===========================
 Goodies::Goodies(StudentWorld* stud, double locX, double locY, int imgid)
-:Actor(stud, locX, locY, imgid, 2, right, 1, 1, false) //Goodies will start out alive
+:Actor(stud, locX, locY, imgid, 2, right, 1, 1, false, false) //Goodies will start out alive
 {
     
 }
@@ -318,10 +388,10 @@ void LandmineGoodie::increaseGoodie()
 //Bad Things: aka Vomit, Pit, Flames
 //Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
 
-BadThings::BadThings(StudentWorld *stud, double locX, double locY, int imgid)
-:Actor(stud, locX, locY, imgid, 2, right, 0, 1, false)
+BadThings::BadThings(StudentWorld *stud, double locX, double locY, int imgid, Direction dir)
+:Actor(stud, locX, locY, imgid, 2, dir, 0, 1, false, false)
 {
-     m_currentTick = 0;
+    m_currentTick = 0;
 }
 
 void BadThings::doSomething()
@@ -330,7 +400,7 @@ void BadThings::doSomething()
 }
 void BadThings::startTick()
 {
-   // return m_currentTick;
+    // return m_currentTick;
     m_currentTick = (getStud())->getTicks();
 }
 int BadThings::getCurrentTick() const
@@ -339,7 +409,7 @@ int BadThings::getCurrentTick() const
 }
 
 Pit::Pit(StudentWorld *stud, double locX, double locY)
-:BadThings(stud, locX, locY, IID_PIT)
+:BadThings(stud, locX, locY, IID_PIT, right)
 {
     
 }
@@ -349,10 +419,10 @@ void Pit::doSomething()
     
 }
 
-Vomit::Vomit(StudentWorld *stud, double locX, double locY)
-:BadThings(stud, locX, locY, IID_VOMIT)
+Vomit::Vomit(StudentWorld *stud, double locX, double locY, Direction dir)
+:BadThings(stud, locX, locY, IID_VOMIT, dir)
 {
-   
+    
 }
 
 void Vomit::doSomething()
@@ -369,11 +439,11 @@ void Vomit::doSomething()
         setDead();
         return;
     }
-        
+    
 }
 
-Flames::Flames(StudentWorld *stud, double locX, double locY)
-:BadThings(stud, locX, locY, IID_FLAME)
+Flames::Flames(StudentWorld *stud, double locX, double locY, Direction dir)
+:BadThings(stud, locX, locY, IID_FLAME, dir)
 {
     
 }
@@ -397,7 +467,7 @@ void Flames::doSomething()
 //ZOMBIE TIME YAY===========================================================
 //Actor(StudentWorld *stud, int locX, int locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
 Zombie::Zombie(StudentWorld *stud, double locX, double locY)
-:Actor(stud, locX, locY, IID_ZOMBIE, 2, right, 0, 1, true)
+:Actor(stud, locX, locY, IID_ZOMBIE, 2, right, 0, 1, true, false)
 {
     m_planDistance = 0;
 }
@@ -417,15 +487,15 @@ void Zombie::doSomething()
     {
         return;
     }
-   
-         //Step 2: Paralyzed
-        if(getStud()->getTicks() % 2 == 0) //even tick
-        {
-            return; //paralyzed
-        }
     
-            double tempVomitX = vomitX();
-            double tempVomitY = vomitY();
+    //Step 2: Paralyzed
+    if(getStud()->getTicks() % 2 == 0) //even tick
+    {
+        return; //paralyzed
+    }
+    
+    double tempVomitX = vomitX();
+    double tempVomitY = vomitY();
     
     //Step 3: Direction + compute vomit coordinates
     //Step 4: Movement Plan (will be DIFFERENT for dumb and smart zombie)
@@ -450,10 +520,10 @@ void Zombie::doSomething()
         moveTo(tempX, tempY);
         m_planDistance--;
     }
-      //Step 7: can't actually move case
+    //Step 7: can't actually move case
     else //bounding box is overlapped so need to pick new direction
         m_planDistance = 0;
-  
+    
 }
 
 //accessor
@@ -522,7 +592,7 @@ DumbZombie::~DumbZombie()
 
 void DumbZombie::movementPlan()
 {
-   // std::cout << "found new movement plan " << std::endl;
+    // std::cout << "found new movement plan " << std::endl;
     int newMove = randInt(3, 10);
     setPlanDistance(newMove);
     int newDirection = randInt(1,4);

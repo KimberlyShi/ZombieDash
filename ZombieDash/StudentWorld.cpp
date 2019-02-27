@@ -94,7 +94,7 @@ int StudentWorld::move()
     m_numTicks++;
     // This code is here merely to allow the game to build, run, and terminate after you hit enter.
     // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
-    list<Actor*>::iterator it;
+    //list<Actor*>::iterator it;
     for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
     {
         (*it)->doSomething();
@@ -163,6 +163,11 @@ void StudentWorld::cleanDead()
         else
             it++;
     }
+}
+
+void StudentWorld::addActor(Actor *sprite)
+{
+    actor.push_back(sprite);
 }
 
 string StudentWorld::findLevel(int level)
@@ -309,16 +314,36 @@ bool StudentWorld::open(Actor *sprite2, double x, double y)
 //determine if object is overlap
 bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
 {
-    const double x1 = (*sprite1).getX();
-    const double y1 = (*sprite1).getY();
-    const double x2 = (*sprite2).getX();
-    const double y2 = (*sprite2).getY();
+    //find the center
+    const double x1 = (*sprite1).getX() + SPRITE_WIDTH/2 - 1;
+    const double y1 = (*sprite1).getY() + SPRITE_HEIGHT/2 -1;
+    const double x2 = (*sprite2).getX() + SPRITE_WIDTH/2 -1;
+    const double y2 = (*sprite2).getY() + SPRITE_HEIGHT/2 -1;
     
     const double differenceX = x1 - x2;
     const double differenceY = y1 - y2;
     
-    //(∆x)2 + (∆y)2 ≤ 10
-    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 10) //doesn't overlap
+//    cout << "DIFFERENCE X: " << differenceX << endl;
+//    cout << "DIFFERENCE Y: " << differenceY << endl;
+    //(∆x)2 + (∆y)2 ≤ 10 //that means that there was overlap
+    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 10*10) //does overlap
         return true;
+    return false;
+}
+
+bool StudentWorld::overlapFlames(Actor *posFlame)
+{
+    //traverse through actor
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    {
+        if((*it)->canBlockFlames()) //only wall or exit can block flames
+        {
+           //check if overlap
+            //overlap will return true
+            if(overlap(posFlame, *it))
+                return true;
+        }
+    }
+    
     return false;
 }
