@@ -31,7 +31,7 @@ int StudentWorld::init()
     Level lev(assetPath());
     // string levelFile = findLevel(getLevel());
     
-    string levelFile = "level01.txt"; //THIS IS JUST FOR TESTING USE COMMENT ABOVE FOR CORRECT IMPLEMENTATION
+    string levelFile = "level03.txt"; //THIS IS JUST FOR TESTING USE COMMENT ABOVE FOR CORRECT IMPLEMENTATION
     Level::LoadResult result = lev.loadLevel(levelFile);
     if (result == Level::load_fail_file_not_found)
         return GWSTATUS_LEVEL_ERROR;
@@ -94,10 +94,11 @@ int StudentWorld::move()
     m_numTicks++;
     // This code is here merely to allow the game to build, run, and terminate after you hit enter.
     // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
-    vector<Actor*>::iterator it;
-    for (int i = 0; i < actor.size(); i++) {
-        actor[i]->doSomething();
-        if(actor[i]->finishedLevel())
+    list<Actor*>::iterator it;
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    {
+        (*it)->doSomething();
+        if((*it)->finishedLevel())
         {
             
             return GWSTATUS_FINISHED_LEVEL;
@@ -112,15 +113,21 @@ int StudentWorld::move()
 
 void StudentWorld::cleanUp()
 {
-    vector<Actor*>::iterator it = actor.begin();
+//    list<Actor*>::iterator it = actor.begin();
     
     
-    while(it != actor.end())
+//    while(it != actor.end())
+//    {
+//        delete *it;
+//        actor.erase(it);
+//        //it = actor.erase(it);
+//
+//    }
+    list<Actor*>::iterator it;
+    for ( list<Actor*>::iterator it = actor.begin(); it != actor.end();)
     {
         delete *it;
-        actor.erase(it);
-        //it = actor.erase(it);
-        
+        it = actor.erase(it);
     }
 }
 //====accessor
@@ -142,15 +149,16 @@ int StudentWorld::getTicks() const
 //========
 void StudentWorld::cleanDead()
 {
-    vector<Actor*>::iterator it = actor.begin();
+//    list<Actor*>::iterator it = actor.begin();
     
     
-    while(it != actor.end())
+  //  while(it != actor.end())
+      for ( list<Actor*>::iterator it = actor.begin(); it != actor.end();)
     {
         if((*it)->isAlive() == 1)
         {
             delete *it;
-            actor.erase(it);
+            it = actor.erase(it);
         }
         else
             it++;
@@ -253,7 +261,7 @@ bool StudentWorld::open(Actor *sprite2, double x, double y)
     double firstyMin = y;
     double firstyMax = firstyMin + SPRITE_HEIGHT -1;
     
-    vector <Actor*>::iterator it = actor.begin();
+    list <Actor*>::iterator it = actor.begin();
     while(it != actor.end())
     {
         if(*it != sprite2  && (*it)->getCanBlock() == true)

@@ -4,7 +4,7 @@
 #include "GameWorld.h"
 #include "Actor.h"
 #include <string>
-#include <vector>
+#include <list>
 
 // Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 class Actor;
@@ -31,7 +31,7 @@ public:
     int getTicks() const;
     
 private:
-    std::vector<Actor*> actor;
+    std::list<Actor*> actor;
     Penelope *m_penelope; //pointer to penelope
     Wall *m_wall;
     Exit *m_exit;
