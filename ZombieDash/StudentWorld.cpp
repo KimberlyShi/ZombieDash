@@ -94,6 +94,7 @@ int StudentWorld::init()
 
 int StudentWorld::move()
 {
+     setGameStatText(statusLine());
     m_numTicks++;
     // This code is here merely to allow the game to build, run, and terminate after you hit enter.
     // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
@@ -106,13 +107,22 @@ int StudentWorld::move()
             
             return GWSTATUS_FINISHED_LEVEL;
         }
+
+//        if(!m_penelope->isAlive()) //penelope is no longer alive
+//        {
+//            decLives();
+//            return GWSTATUS_PLAYER_DIED;
+//        }
     }
     
     cleanDead();
     if(!m_penelope->isAlive()) //penelope is no longer alive
+    {
+        decLives();
         return GWSTATUS_PLAYER_DIED;
+    }
     
-    setGameStatText(statusLine());
+   
     return GWSTATUS_CONTINUE_GAME;
 }
 
@@ -388,7 +398,7 @@ void StudentWorld::flameDamages(Actor *flame)
                  //goodies -- WORKS :)
                  //landmines -- NOT implemented
                  
-                     (*it)->setDead(); //right now, working for goodies
+                 (*it)->setDead(); //right now, working for goodies
                  
                 
                  
