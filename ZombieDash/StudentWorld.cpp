@@ -172,9 +172,9 @@ void StudentWorld::cleanDead()
 
 void StudentWorld::addActor(Actor *sprite)
 {
-    cout << "Success " << endl;
+//    cout << "Success " << endl;
     actor.push_back(sprite);
-    cout << "status " << sprite->isAlive() << endl;
+//    cout << "status " << sprite->isAlive() << endl;
 }
 
 string StudentWorld::findLevel(int level)
@@ -335,6 +335,22 @@ bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
     //(∆x)2 + (∆y)2 ≤ 10 //that means that there was overlap
     if(((differenceX * differenceX) + (differenceY * differenceY)) <= 10*10) //does overlap
         return true;
+    return false;
+}
+bool StudentWorld::overlapLandmine(Actor *mine)
+{
+    //traverse through actor
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    {
+        if((*it)->canActivateMine()) //only wall or exit can block flames
+        {
+            //check if overlap
+            //overlap will return true
+            if(overlap(mine, *it))
+                return true;
+        }
+    }
+    
     return false;
 }
 

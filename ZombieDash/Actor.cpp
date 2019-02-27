@@ -12,6 +12,7 @@ Actor::Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAl
     m_canBlock = canBlock;
     m_levelStatus = false;
     m_canBlockFlames = canBlockFlames;
+    m_canActivateMine = false;
 };
 Actor::~Actor()
 {
@@ -42,7 +43,16 @@ bool Actor::canBlockFlames() const
 {
     return m_canBlockFlames;
 }
-
+bool Actor::canActivateMine() const
+{
+    return m_canActivateMine;
+}
+void Actor::setActivation()
+{
+    m_canActivateMine = true;
+    //will only be called to set to true for zombie, citizen, penelope
+    //otherwise, m_canActivateMine should be false
+}
 void Actor::setFlameCanDamage(bool val) //mutator
 {
     m_flameCanDamage = val;
@@ -95,6 +105,7 @@ Penelope::Penelope(StudentWorld *stud, double locX, double locY)
     posNeg = 0;
     m_dir = right;
     setFlameCanDamage(true); //can be damaged by flames
+    setActivation(); //can activate landmines
 }
 
 Penelope::~Penelope()
@@ -482,7 +493,7 @@ void Landmines::doSomething()
         //        }
         if(m_countdownTicks == 0)
         {
-            std::cout << "here" << std::endl;
+//            std::cout << "here" << std::endl;
             m_inactiveState = false;
             
 //            std::cout << "here1" << std::endl;
@@ -494,7 +505,11 @@ void Landmines::doSomething()
     }
     else if (!m_inactiveState)//now active landmine
     {
-        std::cout << "STATUS " << isAlive() << std::endl;
+//        std::cout << "STATUS " << isAlive() << std::endl;
+        //using the overlapFlame function (will never check if overlaps with wall or exit)
+        //if landmine overlaps with zombie, penelope, citizen
+        if(getStud() -> overlapLandmine(this))
+        {
         if(isAlive() != 1)
         {
             setDead();
@@ -504,6 +519,26 @@ void Landmines::doSomething()
             getStud()->addActor(new Flames(getStud(), getX(), getY(), right));
             
             //this will introduce flame objects in the 8 adjacent slots
+            //north
+            getStud()->addActor(new Flames(getStud(), getX(), getY() + SPRITE_HEIGHT, right));
+            //northeast
+            getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY() + SPRITE_HEIGHT, right));
+            //northwest
+             getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY() + SPRITE_HEIGHT, right));
+            //east
+             getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY(), right));
+            //west
+             getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY(), right));
+            //south
+             getStud()->addActor(new Flames(getStud(), getX(), getY() - SPRITE_HEIGHT, right));
+            //southeast
+            getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY() - SPRITE_HEIGHT, right));
+            //southwest
+            getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY() - SPRITE_HEIGHT, right));
+            
+            //introduce pit
+            getStud()->addActor(new Pit(getStud(), getX(), getY()));
+        }
         }
     }
 }
@@ -589,6 +624,7 @@ Zombie::Zombie(StudentWorld *stud, double locX, double locY)
 {
     m_planDistance = 0;
     setFlameCanDamage(true); //zombies can be affected by flames
+    setActivation(); //can activate landmines
 }
 
 Zombie::~Zombie()

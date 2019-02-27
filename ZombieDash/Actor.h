@@ -27,6 +27,8 @@ public:
     
     //for flames damage
     bool canBlockFlames() const; //only wall or exit can block flames, true if can block
+    void setActivation(); //will be called if the mine can be activated by that actor
+    bool canActivateMine() const; //only zombie, penelope, and citizen will return true
    virtual void setFlameCanDamage(bool val); //mutator
     bool flameCanDamage() const; //accessor
     
@@ -45,6 +47,7 @@ private:
     bool m_levelStatus;
     bool m_canBlockFlames;
     bool m_flameCanDamage;
+    bool m_canActivateMine;
 };
 
 //======PENLEOPE=============
