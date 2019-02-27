@@ -32,6 +32,7 @@ public:
     
     //mutators
     virtual void setDead();
+    void officiallyDead();
     void setfinishedLevelTrue();
     
     
@@ -171,7 +172,7 @@ class Landmines: public BadThings
 public:
     Landmines(StudentWorld *stud, double locX, double locY);
     virtual void doSomething();
-        virtual void setDead();
+//        virtual void setDead();
     
     
 private:

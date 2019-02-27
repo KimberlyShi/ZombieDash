@@ -172,7 +172,9 @@ void StudentWorld::cleanDead()
 
 void StudentWorld::addActor(Actor *sprite)
 {
+    cout << "Success " << endl;
     actor.push_back(sprite);
+    cout << "status " << sprite->isAlive() << endl;
 }
 
 string StudentWorld::findLevel(int level)

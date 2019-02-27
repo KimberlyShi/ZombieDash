@@ -68,6 +68,10 @@ void Actor::setDead()
     m_status = 1; //that means that the actor died
 }
 
+void Actor::officiallyDead()
+{
+    m_status = 1;
+}
 void Actor::setfinishedLevelTrue()
 {
     m_levelStatus = true;
@@ -461,40 +465,63 @@ void Landmines::doSomething()
     if(isAlive() == 1) //landmine is already dead
         return;
     
-    if (m_inactiveState) //landmine is not active
+    if (m_inactiveState && m_countdownTicks >= 0) //landmine is not active
     {
         m_countdownTicks--;
-//        if(getStartTick() == 0)
-//        {
-//            startTick(); //start counting the number of safety ticks
-//        }
+        //        if(getStartTick() == 0)
+        //        {
+        //            startTick(); //start counting the number of safety ticks
+        //        }
         //landmine starts with 30 safety ticks
         //if between currentTick minus startTick is more than 30 ticks
-//        if(getStud()->getTicks() - getStartTick() - 1 > 30)
-//        {
-//            std::cout << "COUNTDOWN " << getStud()->getTicks() - getStartTick() << std::endl;
-//            //landmine becomes active
-//            m_inactiveState = false;
-//        }
-    if(m_countdownTicks == 0)
-    {
-        m_inactiveState = false;
-//        setDead();
-        //PROBLEM: when i uncomment setDead(), after deploying the landmine, everything freezes
+        //        if(getStud()->getTicks() - getStartTick() - 1 > 30)
+        //        {
+        //            std::cout << "COUNTDOWN " << getStud()->getTicks() - getStartTick() << std::endl;
+        //            //landmine becomes active
+        //            m_inactiveState = false;
+        //        }
+        if(m_countdownTicks == 0)
+        {
+            std::cout << "here" << std::endl;
+            m_inactiveState = false;
+            
+//            std::cout << "here1" << std::endl;
+//            //setDead();
+//            std::cout << "here2" << std::endl;
+            return;
+            //PROBLEM: when i uncomment setDead(), after deploying the landmine, everything freezes
+        }
     }
+    else if (!m_inactiveState)//now active landmine
+    {
+        std::cout << "STATUS " << isAlive() << std::endl;
+        if(isAlive() != 1)
+        {
+            setDead();
+             getStud()->playSound(SOUND_LANDMINE_EXPLODE);
+            
+            //this will just be where the landmine was- 1 flame
+            getStud()->addActor(new Flames(getStud(), getX(), getY(), right));
+            
+            //this will introduce flame objects in the 8 adjacent slots
+        }
     }
 }
 
-void Landmines::setDead()
-{
-    Actor::setDead(); //set the status to dead
-    getStud()->playSound(SOUND_LANDMINE_EXPLODE);
-    
-    //introduce a flame object at the same (x,y) location
-    getStud()->addActor(new Flames(getStud(), getX(), getY(), right));
-    
-    //need to implement more
-}
+//void Landmines::setDead()
+//{
+//    //std::cout << "does it" << std::endl;
+//    // Actor::setDead(); //set the status to dead
+////     std::cout << "status1" << isAlive() << std::endl;
+//    officiallyDead();
+////    std::cout << "status" << isAlive() << std::endl;
+//    getStud()->playSound(SOUND_LANDMINE_EXPLODE);
+//   // std::cout << "GOT HERE " << std::endl;
+//    //introduce a flame object at the same (x,y) location
+//    getStud()->addActor(new Flames(getStud(), getX(), getY(), right));
+//
+//    //need to implement more
+//}
 
 Pit::Pit(StudentWorld *stud, double locX, double locY)
 :BadThings(stud, locX, locY, IID_PIT, right)
