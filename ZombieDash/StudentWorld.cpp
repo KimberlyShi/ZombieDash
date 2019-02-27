@@ -31,7 +31,7 @@ int StudentWorld::init()
     Level lev(assetPath());
     // string levelFile = findLevel(getLevel());
     
-    string levelFile = "level03.txt"; //THIS IS JUST FOR TESTING USE COMMENT ABOVE FOR CORRECT IMPLEMENTATION
+    string levelFile = "level01.txt"; //THIS IS JUST FOR TESTING USE COMMENT ABOVE FOR CORRECT IMPLEMENTATION
     Level::LoadResult result = lev.loadLevel(levelFile);
     if (result == Level::load_fail_file_not_found)
         return GWSTATUS_LEVEL_ERROR;
@@ -67,13 +67,13 @@ int StudentWorld::init()
                     case Level::vaccine_goodie:
                         actor.push_back(new VaccineGoodie(this, i*16, j*16));
                         break;
-                    
+                        
                     case Level::dumb_zombie:
                         actor.push_back(new DumbZombie(this, i*16, j*16));
                         break;
-//                    case Level::smart_zombie:
-//                        actor.push_back(new DumbZombie(this, i*16, j*16));
-//                        break;
+                        //                    case Level::smart_zombie:
+                        //                        actor.push_back(new DumbZombie(this, i*16, j*16));
+                        //                        break;
                     default:
                         break;
                 }
@@ -91,7 +91,7 @@ int StudentWorld::init()
 
 int StudentWorld::move()
 {
-     m_numTicks++;
+    m_numTicks++;
     // This code is here merely to allow the game to build, run, and terminate after you hit enter.
     // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
     vector<Actor*>::iterator it;
@@ -99,7 +99,7 @@ int StudentWorld::move()
         actor[i]->doSomething();
         if(actor[i]->finishedLevel())
         {
-           
+            
             return GWSTATUS_FINISHED_LEVEL;
         }
     }
@@ -119,6 +119,8 @@ void StudentWorld::cleanUp()
     {
         delete *it;
         actor.erase(it);
+        //it = actor.erase(it);
+        
     }
 }
 //====accessor
@@ -206,42 +208,92 @@ bool StudentWorld::open(Actor *sprite2, double x, double y)
     //second refers to the second sprite (the one passed in)
     // 4    3
     // 1    2
-    double second1x = x - (*sprite2).getSpriteWidth()/2 - 1;
-    double second1y = y - (*sprite2).getSpriteHeight()/2 - 1;
-    double second2x =  x + (*sprite2).getSpriteWidth()/2 - 1;
-    double second3y =  y + (*sprite2).getSpriteHeight()/2 - 1;
+    //    double second1x = x - (*sprite2).getSpriteWidth()/2 - 1;
+    //    double second1y = y - (*sprite2).getSpriteHeight()/2 - 1;
+    //    double second2x =  x + (*sprite2).getSpriteWidth()/2 - 1;
+    //    double second3y =  y + (*sprite2).getSpriteHeight()/2 - 1;
+    //
+    //    vector<Actor*>::iterator it = actor.begin();
+    //    while(it != actor.end())
+    //    {
+    //        //first refers to sprite1 bounding box
+    //        //second refers to sprite2 bounding box
+    //        double first1x = (*it) ->getX() - (*it)->getSpriteWidth()/2 - 1;
+    //        double first1y = (*it) ->getY() - (*it)->getSpriteHeight()/2 - 1;
+    //        double first2x = first1x + (*it)->getSpriteWidth() - 1;
+    //        double first3y = first1y + (*it)->getSpriteHeight() -1;
+    //
+    //
+    //        for(int i = first1x; i < first2x; i++) //width of sprite 1
+    //        {
+    //            for(int j = first1y; j < first3y; j++) //height of sprite 1
+    //            {
+    //                //check if it's equal to any of the coordinates of sprite 2
+    //                for(int k = second1x; k < second2x; k++) //width of sprite 2
+    //                {
+    //                    for(int r = second1y; r < second3y; r++) //height of sprite 2
+    //                    {
+    //                        if(sprite2 != *it && (*it)->getCanBlock() == true)
+    //                        {
+    //                            if(i == k && j == r)
+    //                                return false;
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //
+    //        it++;
+    //    }
+    //    return true;
+    // 4    3
+    // 1    2
+    double firstxMin = x;
+    double firstxMax = firstxMin + SPRITE_WIDTH - 1;
+    double firstyMin = y;
+    double firstyMax = firstyMin + SPRITE_HEIGHT -1;
     
-    vector<Actor*>::iterator it = actor.begin();
+    vector <Actor*>::iterator it = actor.begin();
     while(it != actor.end())
     {
-        //first refers to sprite1 bounding box
-        //second refers to sprite2 bounding box
-        double first1x = (*it) ->getX() - (*it)->getSpriteWidth()/2 - 1;
-        double first1y = (*it) ->getY() - (*it)->getSpriteHeight()/2 - 1;
-        double first2x = first1x + (*it)->getSpriteWidth() - 1;
-        double first3y = first1y + (*it)->getSpriteHeight() -1;
-        
-        
-        for(int i = first1x; i < first2x; i++) //width of sprite 1
+        if(*it != sprite2  && (*it)->getCanBlock() == true)
         {
-            for(int j = first1y; j < first3y; j++) //height of sprite 1
+            double secondxMin = (*it)->getX();
+            double secondxMax = secondxMin + SPRITE_WIDTH -1;
+            double secondyMin = (*it)->getY();
+            double secondyMax = secondyMin + SPRITE_HEIGHT - 1;
+            
+            //situation 1
+            if(firstxMin >= secondxMin && firstxMin <= secondxMax)
             {
-                //check if it's equal to any of the coordinates of sprite 2
-                for(int k = second1x; k < second2x; k++) //width of sprite 2
-                {
-                    for(int r = second1y; r < second3y; r++) //height of sprite 2
-                    {
-                        if(sprite2 != *it && (*it)->getCanBlock() == true)
-                        {
-                            if(i == k && j == r)
-                                return false;
-                        }
-                    }
-                }
+                //part a
+                if(firstyMin >= secondyMin && firstyMin <= secondyMax)
+                    return false;
+                
+                //part b
+                if(firstyMax >= secondyMin && firstyMax <= secondyMax)
+                    return false;
+                
             }
+            
+            
+            //situation 2
+            if(firstxMax >= secondxMin && firstxMax <= secondxMax)
+            {
+                //part a
+                if(firstyMin >= secondyMin && firstyMin <= secondyMax)
+                    return false;
+                
+                //part b
+                if(firstyMax >= secondyMin && firstyMax <= secondyMax)
+                    return false;
+            }
+            
+            
         }
-        
         it++;
+        
+        
     }
     return true;
 }
