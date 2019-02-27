@@ -43,6 +43,16 @@ bool Actor::canBlockFlames() const
     return m_canBlockFlames;
 }
 
+void Actor::setFlameCanDamage(bool val) //mutator
+{
+    m_flameCanDamage = val;
+}
+
+bool Actor::flameCanDamage() const //accessor
+{
+    return m_flameCanDamage;
+}
+
 bool Actor::finishedLevel() const
 {
     return m_levelStatus;
@@ -80,6 +90,7 @@ Penelope::Penelope(StudentWorld *stud, double locX, double locY)
     keyVal = 0;
     posNeg = 0;
     m_dir = right;
+    setFlameCanDamage(true); //can be damaged by flames
 }
 
 Penelope::~Penelope()
@@ -222,20 +233,39 @@ void Penelope::doSomething()
                         //first create the new flames object
                         Flames *newFlame = new Flames(getStud(), tempX, tempY, getDirection());
                         //check if it will overlap
-                      //  std::cout << "COUNTTT: " << count << " X: " << tempX << " Y: " << tempY << std::endl;
+                        //  std::cout << "COUNTTT: " << count << " X: " << tempX << " Y: " << tempY << std::endl;
                         if(getStud()->overlapFlames(newFlame))//there was overlap
                         {
-                           // std::cout<< "COUNT " << count << std::endl;
+                            // std::cout<< "COUNT " << count << std::endl;
                             delete newFlame; //make sure to delete that newFlame if not pushed
                             break;
                         }
                         else
                         {
-                        //there was no overlap so push onto the list
-                        getStud()->addActor(newFlame);
-                        count++;
+                            //there was no overlap so push onto the list
+                            getStud()->addActor(newFlame);
+                            count++;
                         }
                     }
+                }
+                break;
+            }
+            case KEY_PRESS_TAB: //landmine
+            {
+                if(getMines() >= 1) //has landmines
+                {
+                    m_mines--;
+                    getStud()->addActor(new Landmines(getStud(), getX(), getY())); //add landmine
+                }
+                break;
+            }
+            case KEY_PRESS_ENTER: //vaccine
+            {
+                if(getVaccines() >= 1)
+                {
+                    //set infected status to false
+                    m_infectStat = false;
+                    m_vaccines--;
                 }
                 break;
             }
@@ -256,7 +286,11 @@ bool Penelope::isValid(double x, double y)
     return true;
     
 }
-
+void Penelope::setDead()
+{
+    Actor::setDead();
+    getStud()->playSound(SOUND_PLAYER_DIE);
+}
 //=========WAll
 Wall::Wall(StudentWorld * stud, double locX, double locY)
 :Actor(stud, locX, locY, IID_WALL, 0, right, 0, 1, true, true)
@@ -304,7 +338,7 @@ void Exit::doSomething()
 Goodies::Goodies(StudentWorld* stud, double locX, double locY, int imgid)
 :Actor(stud, locX, locY, imgid, 2, right, 1, 1, false, false) //Goodies will start out alive
 {
-    
+    setFlameCanDamage(true); //can be damaged by flames
 }
 
 Goodies::~Goodies()
@@ -343,6 +377,10 @@ void Goodies::increaseGoodie()
     return;
 }
 
+//void Goodies::setDead()
+//{
+//    Actor::setDead(); //set status to dead
+//}
 
 VaccineGoodie::VaccineGoodie(StudentWorld* stud,double locX, double locY)
 :Goodies(stud, locX, locY, IID_VACCINE_GOODIE)
@@ -391,7 +429,8 @@ void LandmineGoodie::increaseGoodie()
 BadThings::BadThings(StudentWorld *stud, double locX, double locY, int imgid, Direction dir)
 :Actor(stud, locX, locY, imgid, 2, dir, 0, 1, false, false)
 {
-    m_currentTick = 0;
+    m_startTick = 0;
+    setFlameCanDamage(false);
 }
 
 void BadThings::doSomething()
@@ -401,11 +440,60 @@ void BadThings::doSomething()
 void BadThings::startTick()
 {
     // return m_currentTick;
-    m_currentTick = (getStud())->getTicks();
+    m_startTick = (getStud())->getTicks();
 }
-int BadThings::getCurrentTick() const
+int BadThings::getStartTick() const
 {
-    return m_currentTick;
+    return m_startTick;
+}
+
+Landmines::Landmines(StudentWorld *stud, double locX, double locY)
+:BadThings(stud, locX, locY, IID_LANDMINE,right)
+{
+    //override the setFlameDamages
+    setFlameCanDamage(true);
+    
+    m_inactiveState = true; //starts off inactive
+    m_countdownTicks = 30;
+}
+void Landmines::doSomething()
+{
+    if(isAlive() == 1) //landmine is already dead
+        return;
+    
+    if (m_inactiveState) //landmine is not active
+    {
+        m_countdownTicks--;
+//        if(getStartTick() == 0)
+//        {
+//            startTick(); //start counting the number of safety ticks
+//        }
+        //landmine starts with 30 safety ticks
+        //if between currentTick minus startTick is more than 30 ticks
+//        if(getStud()->getTicks() - getStartTick() - 1 > 30)
+//        {
+//            std::cout << "COUNTDOWN " << getStud()->getTicks() - getStartTick() << std::endl;
+//            //landmine becomes active
+//            m_inactiveState = false;
+//        }
+    if(m_countdownTicks == 0)
+    {
+        m_inactiveState = false;
+//        setDead();
+        //PROBLEM: when i uncomment setDead(), after deploying the landmine, everything freezes
+    }
+    }
+}
+
+void Landmines::setDead()
+{
+    Actor::setDead(); //set the status to dead
+    getStud()->playSound(SOUND_LANDMINE_EXPLODE);
+    
+    //introduce a flame object at the same (x,y) location
+    getStud()->addActor(new Flames(getStud(), getX(), getY(), right));
+    
+    //need to implement more
 }
 
 Pit::Pit(StudentWorld *stud, double locX, double locY)
@@ -430,10 +518,10 @@ void Vomit::doSomething()
     if(isAlive() == 1) //vomit is already dead
         return;
     //set the currentTick if not already
-    if(getCurrentTick() == 0)
+    if(getStartTick() == 0)
         startTick();
     //check if there has been 2 ticks since creation
-    if(getStud()->getTicks() - getCurrentTick() == 2)
+    if(getStud()->getTicks() - getStartTick() == 2)
     {
         //set state to dead
         setDead();
@@ -453,15 +541,18 @@ void Flames::doSomething()
     if(isAlive() == 1) //flame is already dead
         return;
     //set the currentTick if not already
-    if(getCurrentTick() == 0)
+    if(getStartTick() == 0)
         startTick();
     //check if there has been 2 ticks since creation
-    if(getStud()->getTicks() - getCurrentTick() == 2)
+    if(getStud()->getTicks() - getStartTick() == 2)
     {
         //set state to dead
         setDead();
         return;
     }
+    
+    //see what damages are done
+    getStud()->flameDamages(this);
 }
 
 //ZOMBIE TIME YAY===========================================================
@@ -470,10 +561,15 @@ Zombie::Zombie(StudentWorld *stud, double locX, double locY)
 :Actor(stud, locX, locY, IID_ZOMBIE, 2, right, 0, 1, true, false)
 {
     m_planDistance = 0;
+    setFlameCanDamage(true); //zombies can be affected by flames
 }
 
 Zombie::~Zombie()
 {
+}
+void Zombie::setDead()
+{
+    //need to implement
 }
 
 void Zombie::doSomething()

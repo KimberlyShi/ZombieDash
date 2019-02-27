@@ -23,6 +23,9 @@ public:
     //overlap will return true if there is overlap
     
     bool overlapFlames(Actor *posFlame); //return true if there is overlap
+    
+    void flameDamages(Actor *flame); //will be called everytime a flame is created from Penelope
+    
     void cleanDead();
     void addActor(Actor *sprite); //add the actor to the list
     

@@ -24,10 +24,14 @@ public:
     double getSpriteHeight() const;
     bool getCanBlock() const;
     bool finishedLevel() const; //true indicates that Penelope finished
+    
+    //for flames damage
     bool canBlockFlames() const; //only wall or exit can block flames, true if can block
+   virtual void setFlameCanDamage(bool val); //mutator
+    bool flameCanDamage() const; //accessor
     
     //mutators
-    void setDead();
+    virtual void setDead();
     void setfinishedLevelTrue();
     
     
@@ -39,6 +43,7 @@ private:
     bool m_canBlock; //true if the object can be blocked (penelope can't run into)
     bool m_levelStatus;
     bool m_canBlockFlames;
+    bool m_flameCanDamage;
 };
 
 //======PENLEOPE=============
@@ -65,6 +70,8 @@ public:
     void addFlames(int num);
     void addVaccines(int num);
     void addMines(int num);
+    
+     virtual void setDead();
     
     
 private:
@@ -108,6 +115,8 @@ public:
     virtual void doSomething();
     void checkOverlap();
     
+
+    
 private:
     virtual void increaseGoodie() = 0;
     
@@ -142,7 +151,9 @@ public:
 private:
     virtual void increaseGoodie();
 };
-//Bad Things: aka pits, vomit, flames
+
+
+//Bad Things: aka pits, vomit, flames===================
 class BadThings: public Actor
 {
     //Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
@@ -150,9 +161,22 @@ public:
     BadThings(StudentWorld *stud, double locX, double locY, int imgid, Direction dir);
     virtual void doSomething();
     virtual void startTick();
-    int getCurrentTick() const;
+    int getStartTick() const;
 private:
-    int m_currentTick;
+    int m_startTick;
+};
+
+class Landmines: public BadThings
+{
+public:
+    Landmines(StudentWorld *stud, double locX, double locY);
+    virtual void doSomething();
+        virtual void setDead();
+    
+    
+private:
+    bool m_inactiveState; //true if it's inactive
+    int m_countdownTicks;
 };
 
 class Pit: public BadThings
@@ -192,6 +216,7 @@ public:
     
     //mutator
     void setPlanDistance(int set);
+     virtual void setDead();
     
 private:
     int m_planDistance;
@@ -203,6 +228,8 @@ class DumbZombie: public Zombie
 public:
      DumbZombie(StudentWorld *stud, double locX, double locY);
     virtual ~DumbZombie();
+//     virtual void setDead();
+    
 private:
     virtual void movementPlan();
 };
@@ -212,6 +239,7 @@ class SmartZombie: public Zombie
 public:
      SmartZombie(StudentWorld *stud, double locX, double locY);
     virtual ~SmartZombie();
+//     virtual void setDead();
 private:
     virtual void movementPlan();
 };

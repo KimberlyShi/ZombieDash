@@ -74,6 +74,9 @@ int StudentWorld::init()
                         //                    case Level::smart_zombie:
                         //                        actor.push_back(new DumbZombie(this, i*16, j*16));
                         //                        break;
+                    
+                        //pit
+                        //citizen
                     default:
                         break;
                 }
@@ -106,6 +109,8 @@ int StudentWorld::move()
     }
     
     cleanDead();
+    if(!m_penelope->isAlive()) //penelope is no longer alive
+        return GWSTATUS_PLAYER_DIED;
     
     setGameStatText(statusLine());
     return GWSTATUS_CONTINUE_GAME;
@@ -346,4 +351,33 @@ bool StudentWorld::overlapFlames(Actor *posFlame)
     }
     
     return false;
+}
+
+void StudentWorld::flameDamages(Actor *flame)
+{
+    //see if it overlaps and do damages accordingly
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    {
+       if((*it)->flameCanDamage())
+       {
+            //check if overlap
+             if(overlap(flame, *it)) //overlap will return true
+             {
+                 //do appropriate damages
+                 //damages can happen to the following:
+                 //penelope --NOT tested
+                 //zombies --NOT implemented
+                 //goodies -- WORKS :)
+                 //landmines -- NOT implemented
+                 
+                     (*it)->setDead(); //right now, working for goodies
+                 
+                
+                 
+                 
+             }
+           
+       }
+        
+    }
 }
