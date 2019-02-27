@@ -34,7 +34,6 @@ public:
     
     //mutators
     virtual void setDead();
-//    void officiallyDead();
     void setfinishedLevelTrue();
     
    

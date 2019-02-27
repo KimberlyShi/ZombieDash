@@ -78,10 +78,6 @@ void Actor::setDead()
     m_status = 1; //that means that the actor died
 }
 
-//void Actor::officiallyDead()
-//{
-//    m_status = 1;
-//}
 void Actor::setfinishedLevelTrue()
 {
     m_levelStatus = true;
@@ -517,49 +513,41 @@ void Landmines::doSomething()
             //this will introduce flame objects in the 8 adjacent slots
             if(i == 0)//north
             {
-            //getStud()->addActor(new Flames(getStud(), getX(), getY() + SPRITE_HEIGHT, right));
                 tempX = getX();
                 tempY = getY() + SPRITE_HEIGHT;
             }
             if(i == 1)//northeast
             {
-            //getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY() + SPRITE_HEIGHT, right));
                 tempX = getX() - SPRITE_WIDTH;
                 tempY = getY() + SPRITE_HEIGHT;
             }
             if(i == 2)//northwest
             {
-            // getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY() + SPRITE_HEIGHT, right));
                 tempX = getX() + SPRITE_WIDTH;
                 tempY = getY() + SPRITE_HEIGHT;
             }
             if(i == 3)//east
             {
-                //getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY(), right));
                 tempX = getX() - SPRITE_WIDTH;
                 tempY = getY();
             }
             if(i == 4)//west
             {
-             //getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY(), right));
                 tempX = getX() + SPRITE_WIDTH;
                 tempY = getY();
             }
             if(i == 5)//south
             {
-            // getStud()->addActor(new Flames(getStud(), getX(), getY() - SPRITE_HEIGHT, right));
                 tempX = getX();
                 tempY = getY() - SPRITE_HEIGHT;
             }
             if(i == 6)//southeast
             {
-                //getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY() - SPRITE_HEIGHT, right));
                 tempX = getX() - SPRITE_WIDTH;
                 tempY = getY() - SPRITE_HEIGHT;
             }
            if(i == 7) //southwest
            {
-            //getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY() - SPRITE_HEIGHT, right));
                tempX = getX() + SPRITE_WIDTH;
                tempY = getY() - SPRITE_HEIGHT;
            }
