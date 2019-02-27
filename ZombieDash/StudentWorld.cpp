@@ -99,29 +99,34 @@ int StudentWorld::move()
     // This code is here merely to allow the game to build, run, and terminate after you hit enter.
     // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
     //list<Actor*>::iterator it;
+   
     for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
     {
         (*it)->doSomething();
+       
+        if(m_penelope->isAlive() == 1) //penelope is no longer alive
+        {
+            decLives();
+            m_penelope->resetItems();
+            return GWSTATUS_PLAYER_DIED;
+        }
+        
         if((*it)->finishedLevel())
         {
-            
+            playSound(SOUND_LEVEL_FINISHED);
             return GWSTATUS_FINISHED_LEVEL;
         }
 
-        if(!m_penelope->isAlive()) //penelope is no longer alive
-        {
-            decLives();
-            return GWSTATUS_PLAYER_DIED;
-        }
-        setGameStatText(statusLine());
+       
     }
-    
+      setGameStatText(statusLine());
     cleanDead();
-    if(!m_penelope->isAlive()) //penelope is no longer alive
-    {
-        decLives();
-        return GWSTATUS_PLAYER_DIED;
-    }
+//    if(!m_penelope->isAlive()) //penelope is no longer alive
+//    {
+//        decLives();
+//        m_penelope->resetItems();
+//        return GWSTATUS_PLAYER_DIED;
+//    }
     
    
     return GWSTATUS_CONTINUE_GAME;

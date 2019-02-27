@@ -78,10 +78,10 @@ void Actor::setDead()
     m_status = 1; //that means that the actor died
 }
 
-void Actor::officiallyDead()
-{
-    m_status = 1;
-}
+//void Actor::officiallyDead()
+//{
+//    m_status = 1;
+//}
 void Actor::setfinishedLevelTrue()
 {
     m_levelStatus = true;
@@ -148,6 +148,13 @@ void Penelope::addVaccines(int num)
 void Penelope::addMines(int num)
 {
     m_mines+= num;
+}
+
+void Penelope::resetItems()
+{
+    m_flames = 0;
+    m_vaccines = 0;
+    m_mines = 0;
 }
 
 //Penelope's Functions
@@ -489,35 +496,86 @@ void Landmines::doSomething()
     {
         //using the overlapFlame function (will never check if overlaps with wall or exit)
         //if landmine overlaps with zombie, penelope, citizen
-        if(getStud() -> overlapLandmine(this))
+       if(getStud() -> overlapLandmine(this))
         {
         if(isAlive() != 1)
         {
-            setDead();
+            setDead(); //set the landmine to dead
              getStud()->playSound(SOUND_LANDMINE_EXPLODE);
             
             //this will just be where the landmine was- 1 flame
             getStud()->addActor(new Flames(getStud(), getX(), getY(), right));
             
-            //this will introduce flame objects in the 8 adjacent slots
-            //north
-            getStud()->addActor(new Flames(getStud(), getX(), getY() + SPRITE_HEIGHT, right));
-            //northeast
-            getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY() + SPRITE_HEIGHT, right));
-            //northwest
-             getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY() + SPRITE_HEIGHT, right));
-            //east
-             getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY(), right));
-            //west
-             getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY(), right));
-            //south
-             getStud()->addActor(new Flames(getStud(), getX(), getY() - SPRITE_HEIGHT, right));
-            //southeast
-            getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY() - SPRITE_HEIGHT, right));
-            //southwest
-            getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY() - SPRITE_HEIGHT, right));
             
-            //introduce pit
+            //will only display the flame if it doesn't overlap with anything
+            //8 flame objects
+          
+            double tempX = 0.0;
+            double tempY = 0.0;
+            for(int i = 0; i < 8; i++)
+            {
+            //this will introduce flame objects in the 8 adjacent slots
+            if(i == 0)//north
+            {
+            //getStud()->addActor(new Flames(getStud(), getX(), getY() + SPRITE_HEIGHT, right));
+                tempX = getX();
+                tempY = getY() + SPRITE_HEIGHT;
+            }
+            if(i == 1)//northeast
+            {
+            //getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY() + SPRITE_HEIGHT, right));
+                tempX = getX() - SPRITE_WIDTH;
+                tempY = getY() + SPRITE_HEIGHT;
+            }
+            if(i == 2)//northwest
+            {
+            // getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY() + SPRITE_HEIGHT, right));
+                tempX = getX() + SPRITE_WIDTH;
+                tempY = getY() + SPRITE_HEIGHT;
+            }
+            if(i == 3)//east
+            {
+                //getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY(), right));
+                tempX = getX() - SPRITE_WIDTH;
+                tempY = getY();
+            }
+            if(i == 4)//west
+            {
+             //getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY(), right));
+                tempX = getX() + SPRITE_WIDTH;
+                tempY = getY();
+            }
+            if(i == 5)//south
+            {
+            // getStud()->addActor(new Flames(getStud(), getX(), getY() - SPRITE_HEIGHT, right));
+                tempX = getX();
+                tempY = getY() - SPRITE_HEIGHT;
+            }
+            if(i == 6)//southeast
+            {
+                //getStud()->addActor(new Flames(getStud(), getX() - SPRITE_WIDTH, getY() - SPRITE_HEIGHT, right));
+                tempX = getX() - SPRITE_WIDTH;
+                tempY = getY() - SPRITE_HEIGHT;
+            }
+           if(i == 7) //southwest
+           {
+            //getStud()->addActor(new Flames(getStud(), getX() + SPRITE_WIDTH, getY() - SPRITE_HEIGHT, right));
+               tempX = getX() + SPRITE_WIDTH;
+               tempY = getY() - SPRITE_HEIGHT;
+           }
+                //need to see if the tempX and tempY will overlap with wall or exit
+                Flames *temp = new Flames(getStud(), tempX, tempY, right);
+                if(getStud()->overlapFlames(temp))
+                {
+                    //if there is overlap, will have to delete that temp flame
+                    delete temp;
+                }
+                else
+                {
+                    getStud()->addActor(temp);
+                }
+            }
+            //introduce pit where the landmine was
             getStud()->addActor(new Pit(getStud(), getX(), getY()));
         }
         }

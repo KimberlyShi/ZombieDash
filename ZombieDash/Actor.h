@@ -34,8 +34,10 @@ public:
     
     //mutators
     virtual void setDead();
-    void officiallyDead();
+//    void officiallyDead();
     void setfinishedLevelTrue();
+    
+   
     
     
     
@@ -77,6 +79,8 @@ public:
     
      virtual void setDead();
     
+    void resetItems(); //after each level, the goodies need to be reset
+    //will NOT reset score
     
 private:
     bool m_infectStat;
