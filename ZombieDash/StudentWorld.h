@@ -24,7 +24,7 @@ public:
     
     bool overlapFlames(Actor *posFlame); //return true if there is overlap
     bool overlapLandmine(Actor *mine); //return true if there is overlap
-    
+    void overlapPit(Actor *pit);
     void flameDamages(Actor *flame); //will be called everytime a flame is created from Penelope
     
     void cleanDead();

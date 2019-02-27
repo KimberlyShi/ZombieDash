@@ -338,6 +338,7 @@ bool Penelope::isValid(double x, double y)
 void Penelope::setDead()
 {
     Actor::setDead();
+    getStud()->increaseScore(-1000); //decrease score by 1000
     getStud()->playSound(SOUND_PLAYER_DIE);
 }
 //=========WAll
@@ -610,6 +611,7 @@ Pit::Pit(StudentWorld *stud, double locX, double locY)
 
 void Pit::doSomething()
 {
+    getStud()->overlapPit(this);
     
 }
 

@@ -75,7 +75,9 @@ int StudentWorld::init()
                         //                        actor.push_back(new DumbZombie(this, i*16, j*16));
                         //                        break;
                     
-                        //pit
+                    case Level::pit:
+                        actor.push_back(new Pit(this, i*16, j*16));
+                        break;
                         //citizen
                     default:
                         break;
@@ -300,6 +302,25 @@ bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
         return true;
     return false;
 }
+
+void StudentWorld::overlapPit(Actor *pit)
+{
+     //the objects that activate landmines (humans, zombies) will also die in pits
+    //traverse through actor
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    {
+        if((*it)->canActivateMine()) //only wall or exit can block flames
+        {
+            //check if overlap
+            //overlap will return true
+            if(overlap(pit, *it))
+            {
+                (*it)->setDead();
+            }
+        }
+    }
+}
+
 bool StudentWorld::overlapLandmine(Actor *mine)
 {
     //traverse through actor
