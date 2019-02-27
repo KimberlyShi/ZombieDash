@@ -349,7 +349,7 @@ void StudentWorld::flameDamages(Actor *flame)
                  //zombies --NOT implemented
                  //goodies -- WORKS :)
                  //landmines -- NOT implemented
-                 
+                
                  (*it)->setDead(); //right now, working for goodies
     
                  

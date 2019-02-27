@@ -496,12 +496,13 @@ int BadThings::getStartTick() const
     return m_startTick;
 }
 
+
+
 Landmines::Landmines(StudentWorld *stud, double locX, double locY)
 :BadThings(stud, locX, locY, IID_LANDMINE,right)
 {
     //override the setFlameDamages
     setFlameCanDamage(true);
-    
     m_inactiveState = true; //starts off inactive
     m_countdownTicks = 30;
 }
@@ -525,18 +526,18 @@ void Landmines::doSomething()
         //if landmine overlaps with zombie, penelope, citizen
        if(getStud() -> overlapLandmine(this))
         {
-        if(isAlive() != 1)
+        if(isAlive() == 2)
         {
             setDead(); //set the landmine to dead
              getStud()->playSound(SOUND_LANDMINE_EXPLODE);
-            
+
             //this will just be where the landmine was- 1 flame
             getStud()->addActor(new Flames(getStud(), getX(), getY(), right));
-            
-            
+
+
             //will only display the flame if it doesn't overlap with anything
             //8 flame objects
-          
+
             double tempX = 0.0;
             double tempY = 0.0;
             for(int i = 0; i < 8; i++)
@@ -638,7 +639,7 @@ void Vomit::doSomething()
 Flames::Flames(StudentWorld *stud, double locX, double locY, Direction dir)
 :BadThings(stud, locX, locY, IID_FLAME, dir)
 {
-    
+    setActivation(); //can activate landmines
 }
 
 void Flames::doSomething()
@@ -794,7 +795,7 @@ DumbZombie::~DumbZombie()
 
 void DumbZombie::movementPlan()
 {
-    // std::cout << "found new movement plan " << std::endl;
+    
     int newMove = randInt(3, 10);
     setPlanDistance(newMove);
     int newDirection = randInt(1,4);

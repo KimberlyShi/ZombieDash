@@ -184,6 +184,7 @@ public:
     virtual void doSomething();
     virtual void startTick();
     int getStartTick() const;
+   // virtual void setDead();
 private:
     int m_startTick;
 };
@@ -193,7 +194,7 @@ class Landmines: public BadThings
 public:
     Landmines(StudentWorld *stud, double locX, double locY);
     virtual void doSomething();
-//        virtual void setDead();
+ // virtual void setDead();
     
     
 private:
