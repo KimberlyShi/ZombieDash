@@ -72,9 +72,9 @@ int StudentWorld::init()
                     case Level::dumb_zombie:
                         actor.push_back(new DumbZombie(this, i*16, j*16));
                         break;
-                        //                    case Level::smart_zombie:
-                        //                        actor.push_back(new DumbZombie(this, i*16, j*16));
-                        //                        break;
+                                            case Level::smart_zombie:
+                                                actor.push_back(new DumbZombie(this, i*16, j*16));
+                                                break;
                         
                     case Level::pit:
                         actor.push_back(new Pit(this, i*16, j*16));
@@ -481,6 +481,50 @@ void StudentWorld::closestZombieToCitizen(double citizenX, double citizenY, doub
     }
 }
 
+void StudentWorld::closestPersonToZombie(double zombie1X, double zombie1Y, double &personX, double &personY, double &distance)
+{
+    double xDiff = 0.0;
+    double yDiff = 0.0;
+    double disSqared = 0.0;
+    double tempDis = 0.0;
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    {
+        if((*it)->isLivingActor())
+        {
+            
+            if(((*it)->getCanExit())) //only citizens and Penelope can't exit
+            {
+                xDiff = zombie1X - (*it)->getX();
+                yDiff = zombie1Y - (*it)->getY();
+                disSqared = (xDiff *xDiff) + (yDiff * yDiff);
+                tempDis = sqrt(disSqared);
+                //want to find the shortest distance
+                
+                if(tempDis < distance)
+                {
+                    distance = tempDis;
+                    personX = (*it)->getX();
+                    personY = (*it)->getY();
+                }
+            }
+        }
+    }
+    
+    //check if m_penelope is closer
+    xDiff = zombie1X - m_penelope->getX();
+    yDiff = zombie1Y - m_penelope->getY();
+    disSqared = (xDiff *xDiff) + (yDiff * yDiff);
+    tempDis = sqrt(disSqared);
+    //want to find the shortest distance
+    
+    if(tempDis < distance)
+    {
+        distance = tempDis;
+        personX = m_penelope->getX();
+        personY = m_penelope->getY();
+    }
+}
+
 
 bool StudentWorld::overlapCitizenPenelope(Actor *sprite1, Actor *sprite2)
 {
@@ -516,6 +560,7 @@ void StudentWorld::incCitizens()
 //=====
 void StudentWorld::newDirectionLess80(double x1, double y1, double x2, double y2, Direction &tempDir)
 {
+    //x1 is the object that x2 is trying to get closer to
     //check if in the same row OR same column
     
     Direction tempXDir = 0;

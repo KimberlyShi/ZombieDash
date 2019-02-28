@@ -267,6 +267,7 @@ public:
     
     //mutator
     void setPlanDistance(int set);
+    void decPlanDistance();
     virtual void setDead();
     
 private:

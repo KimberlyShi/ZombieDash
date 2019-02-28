@@ -35,6 +35,7 @@ public:
     std::string statusLine();
     
     void closestZombieToCitizen(double citizenX, double citizenY, double &zombieX, double &zombieY, double &distance);
+    void closestPersonToZombie(double zombie1X, double zombie1Y, double &personX, double &personY, double &distance);
     //accessor
     Penelope *getPenelope() const;
     int getTicks() const;

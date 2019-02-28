@@ -177,11 +177,11 @@ bool Citizen::citizenZombie(double dist_z)
     if(dist_z <= 80)
     {
         //rightD for example indicates distance for the respective direction
-       
+        
         double rx = 0.0; //coordinates of the closest zombie
         double ry = 0.0;
         
-         double rightD = 256;
+        double rightD = 256;
         double leftD = 256;
         double upD = 256;
         double downD = 256;
@@ -239,8 +239,8 @@ bool Citizen::citizenZombie(double dist_z)
             citizenY = getY()- 2;
         }
         //        std::cout << "HERE??" << std::endl;
-//        if(newDist == 0.0) //no movement will be farther
-//            return false;
+        //        if(newDist == 0.0) //no movement will be farther
+        //            return false;
         
         //        std::cout << "got here" << std::endl;
         setDirection(newDirection); //set the citizen to a new direction
@@ -1018,6 +1018,11 @@ int Zombie::getPlanDistance() const
 }
 
 //mutator
+void Zombie::decPlanDistance()
+{
+    m_planDistance--;
+}
+
 double Zombie::vomitX()
 {
     double currentX = getX();
@@ -1106,6 +1111,66 @@ SmartZombie::~SmartZombie()
 
 void SmartZombie::movementPlan()
 {
+    //Select the person (Penelope or a citizen) closest to the smart zombie
+    double personX = 0.0;
+    double personY = 0.0;
+    double distance = 0.0;
+    getStud()->closestPersonToZombie(this->getX(), this->getY(), personX, personY, distance);
     
+    
+    if(distance >80)
+    {
+        //choose a random direction
+        int newDirection = randInt(1,4);
+        if(newDirection == 1)
+            setDirection(right);
+        if(newDirection == 2)
+            setDirection(left);
+        if(newDirection == 3)
+            setDirection(up);
+        if(newDirection == 4)
+            setDirection(down);
+        
+    }
+    else
+    {
+        Direction tempDir = 0;
+        //less than 80 pixels
+        getStud()->newDirectionLess80(personX, personY, this->getX(), this->getY(), tempDir);
+        
+        //determine destination coordinate
+        double tempX = 0.0;
+        double tempY = 0.0;
+        if(tempDir == right)
+        {
+            tempX = getX() + 1;
+            tempY = getY();
+        }
+        if(tempDir == left)
+        {
+            tempX = getX() - 1;
+            tempY = getY();
+        }
+        if(tempDir == up)
+        {
+            tempX = getX();
+            tempY = getY() + 1;
+        }
+        if(tempDir == down)
+        {
+            tempX = getX();
+            tempY = getY() - 1;
+        }
+        
+        if(getStud()->open(this, tempX, tempY)) //open space
+        {
+            moveTo(tempX, tempY);
+            decPlanDistance();
+        }
+        else
+        {
+            setPlanDistance(0); //have to set plan to 0 to restart
+        }
+    }
 }
 
