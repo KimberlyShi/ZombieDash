@@ -333,8 +333,10 @@ bool StudentWorld::overlapLiving(Actor *vomit)
             //overlap will return true
             if(overlap(vomit, *it))
             {
-                
+                if(!(*it)->getInfectStat()) //only plays this sound once
+                    playSound(SOUND_CITIZEN_INFECTED);
                 (*it)->setInfectStat(true);
+                
                 return true; //there was overlap
             }
             }

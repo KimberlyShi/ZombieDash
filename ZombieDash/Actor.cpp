@@ -1211,6 +1211,7 @@ void DumbZombie::setDead()
     getStud()->increaseScore(1000);
     getStud()->playSound(SOUND_ZOMBIE_DIE);
 }
+
 SmartZombie::SmartZombie(StudentWorld *stud, double locX, double locY)
 :Zombie(stud, locX, locY)
 {
