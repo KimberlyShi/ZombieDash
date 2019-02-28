@@ -383,7 +383,8 @@ void StudentWorld::flameDamages(Actor *flame)
 }
 
 
-void StudentWorld::closestZombieToCitizen(Actor *citizen, double &zombieX, double &zombieY, double &distance)
+//void StudentWorld::closestZombieToCitizen(Actor *citizen, double &zombieX, double &zombieY, double &distance)
+void StudentWorld::closestZombieToCitizen(double citizenX, double citizenY, double &zombieX, double &zombieY, double &distance)
 {
     double xDiff = 0.0;
     double yDiff = 0.0;
@@ -398,8 +399,10 @@ void StudentWorld::closestZombieToCitizen(Actor *citizen, double &zombieX, doubl
             {
                  //cout << "GOT HERE " << endl;
                 //(*it) must be a zombie
-                xDiff = citizen->getX() - (*it)->getX();
-                yDiff = citizen->getY() - (*it)->getY();
+//                xDiff = citizen->getX() - (*it)->getX();
+//                yDiff = citizen->getY() - (*it)->getY();
+                xDiff = citizenX - (*it)->getX();
+                yDiff = citizenY - (*it)->getY();
                 disSqared = (xDiff *xDiff) + (yDiff * yDiff);
                 tempDis = sqrt(disSqared);
                 

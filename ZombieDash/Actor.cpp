@@ -186,7 +186,61 @@ bool Citizen::tempPlace(double &tempX, double &tempY, Direction tempDir)
     }
     return false;
 }
-
+bool Citizen::citizenZombie(double dist_z)
+{
+    //dist_z is the distance between the citizen and zombie
+    //check if the distance is less than or equal to 80 pixels
+    if(dist_z <= 80)
+    {
+        //rightD for example indicates distance for the respective direction
+        double rightD = -1.0;
+        double rx = 0.0; //coordinates of the closest zombie
+        double ry = 0.0;
+        double leftD = -1.0;
+        double upD = -1.0;
+        double downD = -1.0;
+        Direction newDirection = right; //just initialize to right but that's just temporary
+        //check distance for each of them
+        if(getStud()->open(this, getX() + 2, getY()))//right
+           getStud()->closestZombieToCitizen(getX() + 2,getY(), rx, ry, rightD);
+        
+        if(getStud()->open(this, getX() - 2, getY()))//left
+            getStud()->closestZombieToCitizen(getX() - 2 ,getY(), rx, ry, leftD);
+        
+        if(getStud()->open(this, getX(), getY() + 2))//up
+            getStud()->closestZombieToCitizen(getX(),getY() + 2, rx, ry, upD);
+        
+        if(getStud()->open(this, getX(), getY() - 2))//down
+            getStud()->closestZombieToCitizen(getX(),getY() - 2, rx, ry, downD);
+        
+        double newDist = 0.0;
+        if(rightD != -1.0 && rightD < newDist && rightD < dist_z)
+        { newDist = rightD;
+            newDirection = right;
+        }
+        if (leftD != -1.0 && leftD < newDist && leftD < dist_z)
+        {newDist = leftD;
+            newDirection = left;
+        }
+        if (upD != -1.0 && upD < newDist && upD < dist_z)
+        {
+        newDist = upD;
+            newDirection = up;
+        }
+        if (downD != -1.0 && downD < newDist && downD < dist_z)
+        {newDist = downD;
+            newDirection = down;
+        }
+        if(newDist == 0.0) //no movement will be farther
+            return false;
+        
+        setDirection(newDirection); //set the citizen to a new direction
+        //move citizen in that direction
+        return true;
+    }
+    else //no zombie within euclidean distance
+        return false;
+}
 
 void Citizen::doSomething()
 {
@@ -238,7 +292,8 @@ void Citizen::doSomething()
     double tempX = getX();
     double tempY = getY();
     
-    getStud()->closestZombieToCitizen(this, zombieX, zombieY, dist_z);
+//    getStud()->closestZombieToCitizen(this, zombieX, zombieY, dist_z);
+    getStud()->closestZombieToCitizen(getX(), getY(), zombieX, zombieY, dist_z);
     //std::cout << "distance to zombie " << dist_z << std::endl;
     if(dist_p < dist_z || dist_z == 256) //no zombies on that level
     {

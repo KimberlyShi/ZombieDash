@@ -33,7 +33,8 @@ public:
     std::string findLevel(int level);
     std::string statusLine();
     
-    void closestZombieToCitizen(Actor *citizen, double &zombieX, double &zombieY, double &distance);
+    //void closestZombieToCitizen(Actor *citizen, double &zombieX, double &zombieY, double &distance);
+    void closestZombieToCitizen(double citizenX, double citizenY, double &zombieX, double &zombieY, double &distance);
     //accessor
     Penelope *getPenelope() const;
     Exit *getExit() const;

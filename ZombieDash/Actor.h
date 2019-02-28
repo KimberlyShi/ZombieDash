@@ -125,6 +125,7 @@ public:
     virtual void doSomething();
     virtual void setDead();
     bool tempPlace(double &tempX, double &tempY, Direction tempDir);
+    bool citizenZombie(double dist_z); //false-if no zombies
 //    void determineDirection(Direction &tempDir);
 };
 
