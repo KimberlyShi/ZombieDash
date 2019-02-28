@@ -37,7 +37,7 @@ public:
     void closestZombieToCitizen(double citizenX, double citizenY, double &zombieX, double &zombieY, double &distance);
     //accessor
     Penelope *getPenelope() const;
-    Exit *getExit() const;
+//    Exit *getExit() const;
     int getTicks() const;
     
     bool overlapCitizenPenelope(Actor *sprite1, Actor *sprite2);
@@ -45,8 +45,8 @@ public:
 private:
     std::list<Actor*> actor;
     Penelope *m_penelope; //pointer to penelope
-    Wall *m_wall;
-    Exit *m_exit;
+//    Wall *m_wall;
+//    Exit *m_exit;
     int m_numTicks;
 };
 

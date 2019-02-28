@@ -783,6 +783,7 @@ LandmineGoodie::~LandmineGoodie()
 void LandmineGoodie::increaseGoodie()
 {
     (getStud()->getPenelope())->addMines(2);
+    //Penelope::addMines(2);
 }
 //Bad Things: aka Vomit, Pit, Flames
 //Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
