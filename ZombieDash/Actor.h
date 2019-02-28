@@ -29,7 +29,7 @@ public:
     bool canBlockFlames() const; //only wall or exit can block flames, true if can block
     void setActivation(); //will be called if the mine can be activated by that actor
     bool canActivateMine() const; //only zombie, penelope, and citizen will return true
-   virtual void setFlameCanDamage(bool val); //mutator
+    virtual void setFlameCanDamage(bool val); //mutator
     bool flameCanDamage() const; //accessor
     
     //mutators
@@ -42,11 +42,11 @@ public:
     void setLivingActor();
     
     void canExitTrue(); //only can be called in Penelope and citizen
-    bool getCanExit() const; 
-   
-//        int numCitizens() const;
-//    void decCitizens();
-//    void incCitizens();
+    bool getCanExit() const;
+    
+    //        int numCitizens() const;
+    //    void decCitizens();
+    //    void incCitizens();
     
     void successExit();
     
@@ -63,14 +63,14 @@ private:
     bool m_canExit; //default false //only citizen and penelope can exit and return true
     bool m_live;
     
-//    int m_citizens;
+    //    int m_citizens;
 };
 //====HUMAN===
 class Human: public Actor
 {
 public:
     //Penelope::Penelope(StudentWorld *stud, double locX, double locY)
-   // :Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
+    // :Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
     Human(StudentWorld *stud, double locX, double locY, int imgid);
     bool getInfectStat() const;
     int getInfectCount() const;
@@ -91,12 +91,12 @@ public:
     virtual void doSomething();
     
     //accessor
-//    bool getInfectStat() const;
-//    int getInfectCount() const;
+    //    bool getInfectStat() const;
+    //    int getInfectCount() const;
     int getVaccines() const;
     int getMines() const;
     int getFlames() const;
-
+    
     
     //mutators
     void moveX(int posNeg);
@@ -106,14 +106,14 @@ public:
     void addVaccines(int num);
     void addMines(int num);
     
-     virtual void setDead();
+    virtual void setDead();
     
     void resetItems(); //after each level, the goodies need to be reset
     //will NOT reset score
     
 private:
-//    bool m_infectStat;
-//    int m_infectCount;
+    //    bool m_infectStat;
+    //    int m_infectCount;
     int m_vaccines;
     int m_mines;
     int m_flames;
@@ -130,9 +130,9 @@ public:
     Citizen(StudentWorld *stud, double locX, double locY);
     virtual void doSomething();
     virtual void setDead();
-    bool tempPlace(double &tempX, double &tempY, Direction tempDir);
+   // bool tempPlace(double &tempX, double &tempY, Direction tempDir);
     bool citizenZombie(double dist_z); //false-if no zombies
-//    void determineDirection(Direction &tempDir);
+    //    void determineDirection(Direction &tempDir);
     
     
 };
@@ -165,7 +165,7 @@ public:
     virtual void doSomething();
     void checkOverlap();
     
-
+    
     
 private:
     virtual void increaseGoodie() = 0;
@@ -212,7 +212,7 @@ public:
     virtual void doSomething();
     virtual void startTick();
     int getStartTick() const;
-   // virtual void setDead();
+    // virtual void setDead();
 private:
     int m_startTick;
 };
@@ -222,7 +222,7 @@ class Landmines: public BadThings
 public:
     Landmines(StudentWorld *stud, double locX, double locY);
     virtual void doSomething();
- // virtual void setDead();
+    // virtual void setDead();
     
     
 private:
@@ -243,7 +243,7 @@ class Vomit: public BadThings
 public:
     Vomit(StudentWorld *stud, double locX, double locY, Direction dir);
     virtual void doSomething();
-   
+    
 };
 
 class Flames: public BadThings
@@ -267,7 +267,7 @@ public:
     
     //mutator
     void setPlanDistance(int set);
-     virtual void setDead();
+    virtual void setDead();
     
 private:
     int m_planDistance;
@@ -277,9 +277,9 @@ private:
 class DumbZombie: public Zombie
 {
 public:
-     DumbZombie(StudentWorld *stud, double locX, double locY);
+    DumbZombie(StudentWorld *stud, double locX, double locY);
     virtual ~DumbZombie();
-//     virtual void setDead();
+    //     virtual void setDead();
     
 private:
     virtual void movementPlan();
@@ -288,9 +288,9 @@ private:
 class SmartZombie: public Zombie
 {
 public:
-     SmartZombie(StudentWorld *stud, double locX, double locY);
+    SmartZombie(StudentWorld *stud, double locX, double locY);
     virtual ~SmartZombie();
-//     virtual void setDead();
+    //     virtual void setDead();
 private:
     virtual void movementPlan();
 };

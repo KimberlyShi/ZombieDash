@@ -40,12 +40,12 @@ public:
     int getTicks() const;
     
     bool overlapCitizenPenelope(Actor *sprite1, Actor *sprite2);
-    
+    void newDirectionLess80(double x1, double y1, double x2, double y2, Direction &tempDir);
     
     int numCitizens() const;
     void decCitizens();
     void incCitizens();
-
+    
     
 private:
     std::list<Actor*> actor;

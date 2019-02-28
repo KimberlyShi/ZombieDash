@@ -56,7 +56,7 @@ int StudentWorld::init()
                         actor.push_back(new Wall(this, i * 16, j *16));
                         break;
                     case Level::exit:
-                       // m_exit = new Exit(this, i*16, j *16);
+                        // m_exit = new Exit(this, i*16, j *16);
                         actor.push_back(new Exit(this, i*16, j *16));
                         break;
                     case Level::landmine_goodie:
@@ -263,35 +263,35 @@ bool StudentWorld::open(Actor *sprite2, double x, double y)
     
     if(sprite2 != m_penelope)
     {
-    //check if it overlaps with Penelope's coordinates
-    double secondxMin = m_penelope->getX();
-    double secondxMax = secondxMin + SPRITE_WIDTH -1;
-    double secondyMin = m_penelope->getY();
-    double secondyMax = secondyMin + SPRITE_HEIGHT - 1;
-    //situation 1
-    if(firstxMin >= secondxMin && firstxMin <= secondxMax)
-    {
-        //part a
-        if(firstyMin >= secondyMin && firstyMin <= secondyMax)
-            return false;
+        //check if it overlaps with Penelope's coordinates
+        double secondxMin = m_penelope->getX();
+        double secondxMax = secondxMin + SPRITE_WIDTH -1;
+        double secondyMin = m_penelope->getY();
+        double secondyMax = secondyMin + SPRITE_HEIGHT - 1;
+        //situation 1
+        if(firstxMin >= secondxMin && firstxMin <= secondxMax)
+        {
+            //part a
+            if(firstyMin >= secondyMin && firstyMin <= secondyMax)
+                return false;
+            
+            //part b
+            if(firstyMax >= secondyMin && firstyMax <= secondyMax)
+                return false;
+        }
         
-        //part b
-        if(firstyMax >= secondyMin && firstyMax <= secondyMax)
-            return false;
-    }
-    
-    
-    //situation 2
-    if(firstxMax >= secondxMin && firstxMax <= secondxMax)
-    {
-        //part a
-        if(firstyMin >= secondyMin && firstyMin <= secondyMax)
-            return false;
         
-        //part b
-        if(firstyMax >= secondyMin && firstyMax <= secondyMax)
-            return false;
-    }
+        //situation 2
+        if(firstxMax >= secondxMin && firstxMax <= secondxMax)
+        {
+            //part a
+            if(firstyMin >= secondyMin && firstyMin <= secondyMax)
+                return false;
+            
+            //part b
+            if(firstyMax >= secondyMin && firstyMax <= secondyMax)
+                return false;
+        }
     }
     return true;
 }
@@ -326,13 +326,13 @@ void StudentWorld::overlapExit(Actor *exit)
             {
                 
                 (*it)->successExit();
-              //  return true; //there was overlap
+                //  return true; //there was overlap
             }
         }
     }
     
     //return false;
-
+    
 }
 void StudentWorld::overlapPit(Actor *pit)
 {
@@ -510,4 +510,50 @@ void StudentWorld::decCitizens()
 void StudentWorld::incCitizens()
 {
     m_citizens++;
+}
+
+
+//=====
+void StudentWorld::newDirectionLess80(double x1, double y1, double x2, double y2, Direction &tempDir)
+{
+    //check if in the same row OR same column
+    
+    Direction tempXDir = 0;
+    Direction tempYDir = 0;
+    if(x1 - x2 < 0) //penelope on citizen's left
+    {
+        tempXDir = Actor::left;
+    }
+    if (x1 - x2 > 0)
+    {
+        tempXDir = Actor::right;
+    }
+    if(y1 - y2 < 0) //penelope below citizen
+    {
+        tempYDir = Actor::down;
+    }
+    if(y1 - y2 > 0)
+    {
+        tempYDir = Actor::up;
+    }
+    
+    
+    if(x1 == x2 ||y1 == y2)
+    {
+        if(tempXDir != 0)
+            tempDir = tempXDir;
+        else
+            tempDir = tempYDir;
+    }
+    
+    //citizen is not on the same row or column
+    else
+    {
+        int choose = randInt(1, 2); //1 will be direction tempX
+        //2 will be direction tempY
+        if(choose == 1)
+            tempDir = tempXDir;
+        if(choose == 2)
+            tempDir = tempYDir;
+    }
 }

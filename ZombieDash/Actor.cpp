@@ -167,47 +167,9 @@ Citizen::Citizen(StudentWorld *stud, double locX, double locY)
 :Human(stud, locX, locY, IID_CITIZEN)
 {
     //everytime constructed, increase number of citizens
-//    incCitizens();
+    //    incCitizens();
 }
 
-bool Citizen::tempPlace(double &tempX, double &tempY, Direction tempDir)
-{
-    switch(tempDir)
-    {
-        case right:
-        {
-            tempX += 2;
-            break;
-        }
-        case left:
-        {
-            tempX -= 2;
-            break;
-        }
-        case up:
-        {
-            tempY += 2;
-            break;
-        }
-        case down:
-        {
-            tempY -= 2;
-            break;
-        }
-        default:
-            break;
-            
-    }
-    
-    //check if those temp will actually overlap with anything
-    if(getStud()->open(this, tempX, tempY)) //the spot is open
-    {
-        setDirection(tempDir);
-        moveTo(tempX, tempY);
-        return true;
-    }
-    return false;
-}
 bool Citizen::citizenZombie(double dist_z)
 { //aka step 7 on pg 45 of spec
     //dist_z is the distance between the citizen and zombie
@@ -215,9 +177,11 @@ bool Citizen::citizenZombie(double dist_z)
     if(dist_z <= 80)
     {
         //rightD for example indicates distance for the respective direction
-        double rightD = 256;
+       
         double rx = 0.0; //coordinates of the closest zombie
         double ry = 0.0;
+        
+         double rightD = 256;
         double leftD = 256;
         double upD = 256;
         double downD = 256;
@@ -229,7 +193,7 @@ bool Citizen::citizenZombie(double dist_z)
         if(getStud()->open(this, getX() + 2, getY()))//right
         {
             //closestZombieToCitizen will set rightD to the distance between citizen and the closest zombie
-           getStud()->closestZombieToCitizen(getX() + 2,getY(), rx, ry, rightD);
+            getStud()->closestZombieToCitizen(getX() + 2,getY(), rx, ry, rightD);
         }
         
         if(getStud()->open(this, getX() - 2, getY()))//left
@@ -246,38 +210,42 @@ bool Citizen::citizenZombie(double dist_z)
         //test if it was block by comparing to 256
         double citizenX = getX();
         double citizenY = getY();
-        std::cout << "BEFORE X " << citizenX << " Y " << citizenY << std::endl;
+        //std::cout << "BEFORE X " << citizenX << " Y " << citizenY << std::endl;
         if(rightD != 256 && rightD > newDist && rightD > dist_z)
         {
             newDist = rightD;
             newDirection = right;
             citizenX = getX() + 2;
+            citizenY = getY();
         }
         if (leftD != 256 && leftD > newDist && leftD > dist_z)
         {newDist = leftD;
             newDirection = left;
             citizenX = getX() - 2;
+            citizenY = getY();
         }
         if (upD != 256 && upD > newDist && upD > dist_z)
         {
-        newDist = upD;
+            newDist = upD;
             newDirection = up;
+            citizenX = getX();
             citizenY = getY() +  2;
         }
         if (downD != 256 && downD > newDist && downD > dist_z)
         {
             newDist = downD;
             newDirection = down;
+            citizenX = getX();
             citizenY = getY()- 2;
         }
-//        std::cout << "HERE??" << std::endl;
-        if(newDist == 0.0) //no movement will be farther
-            return false;
+        //        std::cout << "HERE??" << std::endl;
+//        if(newDist == 0.0) //no movement will be farther
+//            return false;
         
-//        std::cout << "got here" << std::endl;
+        //        std::cout << "got here" << std::endl;
         setDirection(newDirection); //set the citizen to a new direction
         moveTo(citizenX, citizenY); //move citizen in that direction
-        std::cout << "X " << getX() << " Y " << getY() << std::endl;
+        //std::cout << "X " << getX() << " Y " << getY() << std::endl;
         //std::cout << "X " << citizenX << " Y " << citizenY << std::endl;
         return true;
     }
@@ -287,8 +255,8 @@ bool Citizen::citizenZombie(double dist_z)
 
 void Citizen::doSomething()
 {
- if(isAlive() == 1) //is dead
-     return;
+    if(isAlive() == 1) //is dead
+        return;
     
     if(getInfectStat() == true) //if citizen is infected
     {
@@ -307,10 +275,10 @@ void Citizen::doSomething()
             if(probability >= 1 && probability <=7) //70% chance become dumb
                 getStud()->addActor(new DumbZombie(getStud(), getX(), getY()));
             else //will either be 8,9,10 (30% probability)
-               getStud()->addActor(new SmartZombie(getStud(), getX(), getY()));
+                getStud()->addActor(new SmartZombie(getStud(), getX(), getY()));
             return;
         }
-    
+        
         return; //??? NOT SURE IF THIS IS CORRECT?????
     }
     
@@ -325,18 +293,18 @@ void Citizen::doSomething()
     double dist_pSquared = (xPenelopeDis * xPenelopeDis) + (yPenelopeDis * yPenelopeDis);
     double dist_p = sqrt(dist_pSquared); //sqrt is a function imported from math.h
     
-
+    
     double dist_z = 256.0;
     double zombieX = 0.0;
     double zombieY = 0.0;
-    double xPen = (getStud()->getPenelope())->getX();
-    double yPen = (getStud()->getPenelope())->getY();
+    //    double xPen = (getStud()->getPenelope())->getX();
+    //    double yPen = (getStud()->getPenelope())->getY();
     double tempX = getX();
     double tempY = getY();
     
-
+    
     getStud()->closestZombieToCitizen(getX(), getY(), zombieX, zombieY, dist_z);
-
+    
     
     //implies that dist_z >80
     if((dist_p < dist_z || dist_z == 256) && dist_p <=80) //no zombies on that level
@@ -345,116 +313,83 @@ void Citizen::doSomething()
         //citizen wants to follow penelope
         if(getStud()->overlapCitizenPenelope(this, getStud()->getPenelope()))
         {
-            //check if in the same row or column as penelope
-            if(getX() == (getStud()->getPenelope())->getX() ||
-               getY() == (getStud()->getPenelope())->getY())
-            {
-                Direction tempDir = 0;
-                //determine the direction towards penelope
-                if(xPen - getX() < 0) //penelope on citizen's left
-                {
-                    tempDir = left;
-                }
-                else if (xPen - getX() > 0)
-                {
-                    tempDir = right;
-                }
-                else if(yPen - getY() < 0) //penelope below citizen
-                {
-                    tempDir = down;
-                }
-                else
-                {
-                    tempDir = up;
-                }
-        
-                if(tempPlace(tempX, tempY, tempDir)) //will calculate 2 pixels
-                { //was able to move
-                    return;
-                }
-                else //citizen would be blocked by something
-                {
-                    //step 7
-                    citizenZombie(dist_z);
-                    return;
-                }
-            }
+            Direction tempDir = 0;
+            getStud()->newDirectionLess80(getStud()->getPenelope()->getX(), getStud()->getPenelope()->getY(),getX(), getY(), tempDir);
             
-            //citizen is not on the same row or column
+            //check if can move 2 pixels in that direction
+            if(tempDir == right)
+                tempX += 2;
+            if (tempDir == left)
+                tempX -= 2;
+            if (tempDir == up)
+                tempY += 2;
+            if(tempDir == down)
+                tempY-=2;
+            
+            //check if that temp is open
+            if(getStud()->open(this, tempX, tempY))
+            {
+                setDirection(tempDir);
+                moveTo(tempX, tempY);
+                return;
+            }
             else
             {
-                //determine direction closest
-                Direction tempXDir = 0;
-                Direction tempYDir = 0;
-                if(xPen - getX() < 0) //penelope on citizen's left
+                if(getX() == getStud()->getPenelope()->getX() || getY() == getStud()->getPenelope()->getY()) //check if same row/column
                 {
-                    tempXDir = left;
-                }
-                if (xPen - getX() > 0)
-                {
-                    tempXDir = right;
-                }
-               if(yPen - getY() < 0) //penelope below citizen
-                {
-                    tempYDir = down;
-                }
-                 if(yPen - getY() > 0)
-                {
-                    tempYDir = up;
-                }
-                
-                int choose = randInt(1, 2); //1 will be direction tempX
-                //2 will be direction tempY
-                if(choose == 1)
-                {
-                    //tempX
-                    if(tempPlace(tempX, tempY, tempXDir))
-                        return;
-                    //flip the direction
-                    if(tempXDir == right)
-                        tempXDir = left;
-                    else
-                        tempXDir = right;
                     
-                    //try to move in the other direction
-                    if(tempPlace(tempX, tempY, tempXDir))
-                        return;
-                    
-                    //if both directions don't work, then will go to step 7
-                    //STEP 7!!!!
+                    //skip step 7
                     citizenZombie(dist_z);
-                    return;
+                    return; //FIX
                 }
-                if(choose == 2)
+                else //not same row or column
                 {
-                    //tempY
-                     if(tempPlace(tempX, tempY, tempYDir))
-                         return;
+                    //choose the opposite direction
+                    if(tempDir == right)
+                        tempDir = left;
+                    if(tempDir == left)
+                        tempDir = right;
+                    if(tempDir == up)
+                        tempDir = down;
+                    if(tempDir == down)
+                        tempDir = up;
                     
-                    if(tempYDir == up)
-                        tempYDir = down;
-                    else
-                        tempYDir = up;
+                    //check if can move 2 pixels in that NEW direction
+                    if(tempDir == right)
+                        tempX += 2;
+                    if (tempDir == left)
+                        tempX -= 2;
+                    if (tempDir == up)
+                        tempY += 2;
+                    if(tempDir == down)
+                        tempY-=2;
                     
-                    //try to move in the other direction
-                    if(tempPlace(tempX, tempY, tempYDir))
+                    //check if that temp is open
+                    if(getStud()->open(this, tempX, tempY))
+                    {
+                        setDirection(tempDir);
+                        moveTo(tempX, tempY);
                         return;
+                    }
+                    else
+                    {
+                        //skip to step 7
+                        citizenZombie(dist_z);
+                        return;
+                    }
                     
-                    //FIX: need the alternate
-                    //STEP 7!!!!
-                    citizenZombie(dist_z);
-                    return;
                 }
             }
         }
     }
+    
 }
 
 void Citizen::setDead()
 {
     Actor::setDead();
     getStud()->decCitizens(); //decrease the number of citizens
-     (getStud()) -> playSound(SOUND_CITIZEN_DIE); //play sound
+    (getStud()) -> playSound(SOUND_CITIZEN_DIE); //play sound
     getStud()->increaseScore(-1000); //decrease score by 1000 points
 }
 
@@ -464,16 +399,16 @@ Penelope::Penelope(StudentWorld *stud, double locX, double locY)
 //:Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
 :Human(stud, locX, locY, IID_PLAYER)
 {
-//    m_infectStat = false; //infection status starts off as false
-//    m_infectCount = 0; //infection count is 0
+    //    m_infectStat = false; //infection status starts off as false
+    //    m_infectCount = 0; //infection count is 0
     m_vaccines = 0;
     m_mines = 0;
     m_flames = 0;
     keyVal = 0;
     posNeg = 0;
     m_dir = right;
-//    setFlameCanDamage(true); //can be damaged by flames
-//    setActivation(); //can activate landmines
+    //    setFlameCanDamage(true); //can be damaged by flames
+    //    setActivation(); //can activate landmines
 }
 
 Penelope::~Penelope()
@@ -683,7 +618,7 @@ bool Penelope::isValid(double x, double y)
 void Penelope::setDead()
 {
     Actor::setDead();
-//    getStud()->increaseScore(-1000); //decrease score by 1000
+    //    getStud()->increaseScore(-1000); //decrease score by 1000
     getStud()->playSound(SOUND_PLAYER_DIE);
 }
 //=========WAll
@@ -722,11 +657,11 @@ void Exit::doSomething()
     //only when all citizens have left or died can penelope leave
     if (getStud()->numCitizens() == 0)
     {
-    if((getStud())->overlap(this, getStud()->getPenelope()))
-    {
-        setfinishedLevelTrue();
-        return;
-    }
+        if((getStud())->overlap(this, getStud()->getPenelope()))
+        {
+            setfinishedLevelTrue();
+            return;
+        }
     }
 }
 
@@ -869,80 +804,80 @@ void Landmines::doSomething()
     {
         //using the overlapFlame function (will never check if overlaps with wall or exit)
         //if landmine overlaps with zombie, penelope, citizen
-       if(getStud() -> overlapLandmine(this))
+        if(getStud() -> overlapLandmine(this))
         {
-        if(isAlive() == 2)
-        {
-            setDead(); //set the landmine to dead
-             getStud()->playSound(SOUND_LANDMINE_EXPLODE);
-
-            //this will just be where the landmine was- 1 flame
-            getStud()->addActor(new Flames(getStud(), getX(), getY(), right));
-
-
-            //will only display the flame if it doesn't overlap with anything
-            //8 flame objects
-
-            double tempX = 0.0;
-            double tempY = 0.0;
-            for(int i = 0; i < 8; i++)
+            if(isAlive() == 2)
             {
-            //this will introduce flame objects in the 8 adjacent slots
-            if(i == 0)//north
-            {
-                tempX = getX();
-                tempY = getY() + SPRITE_HEIGHT;
-            }
-            if(i == 1)//northeast
-            {
-                tempX = getX() - SPRITE_WIDTH;
-                tempY = getY() + SPRITE_HEIGHT;
-            }
-            if(i == 2)//northwest
-            {
-                tempX = getX() + SPRITE_WIDTH;
-                tempY = getY() + SPRITE_HEIGHT;
-            }
-            if(i == 3)//east
-            {
-                tempX = getX() - SPRITE_WIDTH;
-                tempY = getY();
-            }
-            if(i == 4)//west
-            {
-                tempX = getX() + SPRITE_WIDTH;
-                tempY = getY();
-            }
-            if(i == 5)//south
-            {
-                tempX = getX();
-                tempY = getY() - SPRITE_HEIGHT;
-            }
-            if(i == 6)//southeast
-            {
-                tempX = getX() - SPRITE_WIDTH;
-                tempY = getY() - SPRITE_HEIGHT;
-            }
-           if(i == 7) //southwest
-           {
-               tempX = getX() + SPRITE_WIDTH;
-               tempY = getY() - SPRITE_HEIGHT;
-           }
-                //need to see if the tempX and tempY will overlap with wall or exit
-                Flames *temp = new Flames(getStud(), tempX, tempY, right);
-                if(getStud()->overlapFlames(temp))
+                setDead(); //set the landmine to dead
+                getStud()->playSound(SOUND_LANDMINE_EXPLODE);
+                
+                //this will just be where the landmine was- 1 flame
+                getStud()->addActor(new Flames(getStud(), getX(), getY(), right));
+                
+                
+                //will only display the flame if it doesn't overlap with anything
+                //8 flame objects
+                
+                double tempX = 0.0;
+                double tempY = 0.0;
+                for(int i = 0; i < 8; i++)
                 {
-                    //if there is overlap, will have to delete that temp flame
-                    delete temp;
+                    //this will introduce flame objects in the 8 adjacent slots
+                    if(i == 0)//north
+                    {
+                        tempX = getX();
+                        tempY = getY() + SPRITE_HEIGHT;
+                    }
+                    if(i == 1)//northeast
+                    {
+                        tempX = getX() - SPRITE_WIDTH;
+                        tempY = getY() + SPRITE_HEIGHT;
+                    }
+                    if(i == 2)//northwest
+                    {
+                        tempX = getX() + SPRITE_WIDTH;
+                        tempY = getY() + SPRITE_HEIGHT;
+                    }
+                    if(i == 3)//east
+                    {
+                        tempX = getX() - SPRITE_WIDTH;
+                        tempY = getY();
+                    }
+                    if(i == 4)//west
+                    {
+                        tempX = getX() + SPRITE_WIDTH;
+                        tempY = getY();
+                    }
+                    if(i == 5)//south
+                    {
+                        tempX = getX();
+                        tempY = getY() - SPRITE_HEIGHT;
+                    }
+                    if(i == 6)//southeast
+                    {
+                        tempX = getX() - SPRITE_WIDTH;
+                        tempY = getY() - SPRITE_HEIGHT;
+                    }
+                    if(i == 7) //southwest
+                    {
+                        tempX = getX() + SPRITE_WIDTH;
+                        tempY = getY() - SPRITE_HEIGHT;
+                    }
+                    //need to see if the tempX and tempY will overlap with wall or exit
+                    Flames *temp = new Flames(getStud(), tempX, tempY, right);
+                    if(getStud()->overlapFlames(temp))
+                    {
+                        //if there is overlap, will have to delete that temp flame
+                        delete temp;
+                    }
+                    else
+                    {
+                        getStud()->addActor(temp);
+                    }
                 }
-                else
-                {
-                    getStud()->addActor(temp);
-                }
+                //introduce pit where the landmine was
+                getStud()->addActor(new Pit(getStud(), getX(), getY()));
             }
-            //introduce pit where the landmine was
-            getStud()->addActor(new Pit(getStud(), getX(), getY()));
-        }
         }
     }
 }
