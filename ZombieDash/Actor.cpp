@@ -197,17 +197,19 @@ bool Citizen::citizenZombie(double dist_z)
     //check if the distance is less than or equal to 80 pixels
     if(dist_z <= 80)
     {
+//        moveTo(200, 200);
+//        std::cout << "GOT HERE"  << std::endl;
         //rightD for example indicates distance for the respective direction
         
         double rx = 0.0; //coordinates of the closest zombie
         double ry = 0.0;
         
-        double rightD = 256;
+        double rightD = 256; //refers to distance
         double leftD = 256;
         double upD = 256;
         double downD = 256;
         
-        Direction newDirection = right; //just initialize to right but that's just temporary
+       
         
         //check if where want to move is open
         //check distance for each of them
@@ -231,6 +233,8 @@ bool Citizen::citizenZombie(double dist_z)
         //test if it was block by comparing to 256
         double citizenX = getX();
         double citizenY = getY();
+         Direction newDirection = right; //just initialize to right but that's just temporary
+        
         //std::cout << "BEFORE X " << citizenX << " Y " << citizenY << std::endl;
         if(rightD != 256 && rightD > newDist && rightD > dist_z)
         {
@@ -259,6 +263,9 @@ bool Citizen::citizenZombie(double dist_z)
             citizenX = getX();
             citizenY = getY()- 2;
         }
+        
+        if(newDist < dist_z)
+            return false;
         //        std::cout << "HERE??" << std::endl;
         //        if(newDist == 0.0) //no movement will be farther
         //            return false;
@@ -326,9 +333,11 @@ void Citizen::doSomething()
     
     
     getStud()->closestZombieToCitizen(getX(), getY(), zombieX, zombieY, dist_z);
+    //zombieX will now have the coordinates of the nearest zombie
+    //dist_z (if not 256) will have distance to nearest zombie
+    //dist_z means that there were no zombies
     
-    
-    //implies that dist_z >80
+   
     if((dist_p < dist_z || dist_z == 256) && dist_p <=80) //no zombies on that level
     {
         //check Euclidean distance from penelope to citizen
@@ -366,25 +375,43 @@ void Citizen::doSomething()
                 }
                 else //not same row or column
                 {
+                    Direction newTempDir = 0;
                     //choose the opposite direction
-                    if(tempDir == right)
-                        tempDir = left;
-                    if(tempDir == left)
-                        tempDir = right;
-                    if(tempDir == up)
-                        tempDir = down;
-                    if(tempDir == down)
-                        tempDir = up;
+                    switch(tempDir)
+                    {
+                        case right:
+                            newTempDir = left;
+                            break;
+                        case left:
+                            newTempDir = right;
+                            break;
+                        case up:
+                            newTempDir = down;
+                            break;
+                        case down:
+                            newTempDir = up;
+                            break;
+                        default:
+                            break;
+                    }
+//                    if(tempDir == right)
+//                        tempDir = left;
+//                    if(tempDir == left)
+//                        tempDir = right;
+//                    if(tempDir == up)
+//                        tempDir = down;
+//                    if(tempDir == down)
+//                        tempDir = up;
                     
                     //check if can move 2 pixels in that NEW direction
-                    if(tempDir == right)
-                        tempX += 2;
-                    if (tempDir == left)
-                        tempX -= 2;
-                    if (tempDir == up)
-                        tempY += 2;
-                    if(tempDir == down)
-                        tempY-=2;
+                    if(newTempDir == right)
+                        tempX = getX() + 2;
+                    if (newTempDir == left)
+                        tempX = getX() - 2;
+                    if (newTempDir == up)
+                        tempY = getY() + 2;
+                    if(newTempDir == down)
+                        tempY = getY() - 2;
                     
                     //check if that temp is open
                     if(getStud()->open(this, tempX, tempY))
@@ -404,6 +431,8 @@ void Citizen::doSomething()
             }
         }
     }
+    citizenZombie(dist_z);
+    return;
     
 }
 

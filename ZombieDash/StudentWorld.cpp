@@ -32,7 +32,7 @@ int StudentWorld::init()
     Level lev(assetPath());
     // string levelFile = findLevel(getLevel());
     
-    string levelFile = "level03.txt"; //THIS IS JUST FOR TESTING USE COMMENT ABOVE FOR CORRECT IMPLEMENTATION
+    string levelFile = "level02.txt"; //THIS IS JUST FOR TESTING USE COMMENT ABOVE FOR CORRECT IMPLEMENTATION
     Level::LoadResult result = lev.loadLevel(levelFile);
     if (result == Level::load_fail_file_not_found)
         return GWSTATUS_LEVEL_ERROR;
@@ -600,8 +600,8 @@ void StudentWorld::newDirectionLess80(double x1, double y1, double x2, double y2
     //x1 is the object that x2 is trying to get closer to
     //check if in the same row OR same column
     
-    Direction tempXDir = 0;
-    Direction tempYDir = 0;
+    Direction tempXDir = -1;
+    Direction tempYDir = -1;
     if(x1 - x2 < 0) //penelope on citizen's left
     {
         tempXDir = Actor::left;
@@ -620,9 +620,9 @@ void StudentWorld::newDirectionLess80(double x1, double y1, double x2, double y2
     }
     
     
-    if(x1 == x2 ||y1 == y2)
+    if(x1 == x2 ||y1 == y2) //same row or column
     {
-        if(tempXDir != 0)
+        if(tempXDir != -1)
             tempDir = tempXDir;
         else
             tempDir = tempYDir;
