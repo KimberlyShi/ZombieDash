@@ -31,17 +31,6 @@ void Actor::doSomething()
     return;
 }
 
-
-//double Actor::getSpriteWidth() const
-//{
-//    return SPRITE_WIDTH;
-//}
-//
-//double Actor::getSpriteHeight() const
-//{
-//    return SPRITE_HEIGHT;
-//}
-
 bool Actor::getCanBlock() const
 {
     return m_canBlock;
@@ -115,19 +104,6 @@ void Actor::setLivingActor()
     m_live = true;
 }
 
-//int Actor::numCitizens() const
-//{
-//    return m_citizens;
-//}
-//void Actor::decCitizens()
-//{
-//    m_citizens--;
-//}
-//void Actor::incCitizens()
-//{
-//    m_citizens++;
-//}
-
 void Actor::successExit()
 {
     getStud()->decCitizens();
@@ -157,8 +133,6 @@ void Actor::setInfectStat(bool val)
 
 void Actor::newDirection(double &tempX, double &tempY, Direction tempDir, double value)
 {
-//    double tempX = 0.0;
-//    double tempY = 0.0;
     if(tempDir == right)
     {
         tempX = getX() + value;
@@ -184,38 +158,16 @@ void Actor::newDirection(double &tempX, double &tempY, Direction tempDir, double
 Human::Human(StudentWorld *stud, double locX, double locY, int imgid)
 :Actor(stud, locX, locY, imgid,2,right, 0, 1, true, false)
 {
-//    m_infectStat = false; //infection status starts off as false
-//    m_infectCount = 0; //infection count is 0
     canExitTrue();
     setFlameCanDamage(true); //can be damaged by flames
     setActivation(); //can activate landmines
     setLivingActor();
 }
 
-//bool Human::getInfectStat() const
-//{
-//    return m_infectStat;
-//}
-//int Human::getInfectCount() const
-//{
-//    return m_infectCount;
-//}
-//
-//void Human::increaseInfectCount()
-//{
-//    m_infectCount++;
-//}
-//
-//void Human::setInfectStat(bool val)
-//{
-//    m_infectStat = val;
-//}
 //CITIZEN=====
 Citizen::Citizen(StudentWorld *stud, double locX, double locY)
 :Human(stud, locX, locY, IID_CITIZEN)
 {
-    //everytime constructed, increase number of citizens
-    //    incCitizens();
 }
 
 bool Citizen::citizenZombie(double dist_z)
@@ -224,10 +176,7 @@ bool Citizen::citizenZombie(double dist_z)
     //check if the distance is less than or equal to 80 pixels
     if(dist_z <= 80)
     {
-//        moveTo(200, 200);
-//        std::cout << "GOT HERE"  << std::endl;
         //rightD for example indicates distance for the respective direction
-        
         double rx = 0.0; //coordinates of the closest zombie
         double ry = 0.0;
         
@@ -1024,7 +973,6 @@ void Flames::doSomething()
 }
 
 //ZOMBIE TIME YAY===========================================================
-//Actor(StudentWorld *stud, int locX, int locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
 Zombie::Zombie(StudentWorld *stud, double locX, double locY)
 :Actor(stud, locX, locY, IID_ZOMBIE, 2, right, 0, 1, true, false)
 {
@@ -1037,17 +985,10 @@ Zombie::Zombie(StudentWorld *stud, double locX, double locY)
 Zombie::~Zombie()
 {
 }
-void Zombie::setDead()
-{
-    //need to implement
-}
+void Zombie::setDead() {}
 
 void Zombie::doSomething()
 {
-    
-    //PROBLEM: zombies are moving super slow
-    
-    
     //Step 1: check if alive
     if(isAlive() == 1) //not alive
     {
@@ -1059,9 +1000,6 @@ void Zombie::doSomething()
     {
         return; //paralyzed
     }
-//
-//    double tempVomitX = vomitX();
-//    double tempVomitY = vomitY();
     
     //Step 3: Direction + compute vomit coordinates
     //compute possible coordinates
@@ -1070,36 +1008,6 @@ void Zombie::doSomething()
     double vomitX = 0.0;
     double vomitY = 0.0;
     newDirection(vomitX, vomitY, current, SPRITE_WIDTH);
-//    switch(current)
-//    {
-//        case right:
-//        {
-//            vomitX = getX() + SPRITE_WIDTH;
-//            vomitY = getY();
-//            break;
-//        }
-//        case left:
-//        {
-//            vomitX = getX() - SPRITE_WIDTH;
-//            vomitY = getY();
-//            break;
-//        }
-//        case up:
-//        {
-//            vomitX = getX();
-//            vomitY = getY() + SPRITE_HEIGHT;
-//            break;
-//        }
-//        case down:
-//        {
-//            vomitX = getX();
-//            vomitY = getY() - SPRITE_HEIGHT;
-//            break;
-//        }
-//        default:
-//            break;
-//
-//    }
     
     //create temp Vomit
     Vomit *temp = new Vomit(getStud(), vomitX, vomitY, getDirection());
@@ -1117,11 +1025,9 @@ void Zombie::doSomething()
             delete temp;
     }
     else
-    {
         delete temp;
-    }
-    
-    //check to
+
+
     //Step 4: Movement Plan (will be DIFFERENT for dumb and smart zombie)
     if(m_planDistance == 0)
         movementPlan(); //set new movement plan
@@ -1129,16 +1035,6 @@ void Zombie::doSomething()
     //Step 5: destination coordinate
     double tempX = 0.0;
     double tempY = 0.0;
-//    double tempX = getX();
-//    double tempY = getY();
-//    if(getDirection() == right)
-//        tempX += 1; //add a pixel
-//    if(getDirection() == left)
-//        tempX -= 1;
-//    if(getDirection() == up)
-//        tempY += 1;
-//    if(getDirection() == down)
-//        tempY -= 1;
     
     newDirection(tempX, tempY, getDirection(), 1);
     
@@ -1165,41 +1061,6 @@ void Zombie::decPlanDistance()
 {
     m_planDistance--;
 }
-
-//double Zombie::vomitX()
-//{
-//    double currentX = getX();
-//    double newX = 0.0;
-//    Direction temp = getDirection();
-//    switch(temp)
-//    {
-//        case right:
-//            newX = currentX + SPRITE_WIDTH;
-//        case left:
-//            newX = currentX - SPRITE_WIDTH;
-//        default:
-//            break;
-//    }
-//    return newX;
-//}
-//
-//
-//double Zombie::vomitY()
-//{
-//    double currentY = getY();
-//    double newY = 0.0;
-//    Direction temp = getDirection();
-//    switch(temp)
-//    {
-//        case down:
-//            newY = currentY + SPRITE_HEIGHT;
-//        case up:
-//            newY = currentY - SPRITE_HEIGHT;
-//        default:
-//            break;
-//    }
-//    return newY;
-//}
 
 void Zombie::setPlanDistance(int set)
 {
@@ -1241,16 +1102,6 @@ void DumbZombie::movementPlan()
     int newMove = randInt(3, 10);
     setPlanDistance(newMove);
     randDirection();
-//    int newDirection = randInt(1,4);
-//    if(newDirection == 1)
-//        setDirection(right);
-//    if(newDirection == 2)
-//        setDirection(left);
-//    if(newDirection == 3)
-//        setDirection(up);
-//    if(newDirection == 4)
-//        setDirection(down);
-    
 }
 
 void DumbZombie::setDead()
@@ -1281,17 +1132,6 @@ void DumbZombie::setDead()
         }
         else
             delete temp;
-        
-        
-//        int newDirection = randInt(1,4);
-//        if(newDirection == 1)
-//            setDirection(right);
-//        if(newDirection == 2)
-//            setDirection(left);
-//        if(newDirection == 3)
-//            setDirection(up);
-//        if(newDirection == 4)
-//            setDirection(down);
     }
 }
 
@@ -1319,16 +1159,6 @@ void SmartZombie::movementPlan()
     {
         //choose a random direction
         randDirection();
-//        int newDirection = randInt(1,4);
-//        if(newDirection == 1)
-//            setDirection(right);
-//        if(newDirection == 2)
-//            setDirection(left);
-//        if(newDirection == 3)
-//            setDirection(up);
-//        if(newDirection == 4)
-//            setDirection(down);
-        
     }
     else
     {
@@ -1340,28 +1170,6 @@ void SmartZombie::movementPlan()
         double tempY = 0.0;
 
         newDirection(tempX, tempY, tempDir, 1.0); //increment by 1
-        //determine destination coordinate
-//        if(tempDir == right)
-//        {
-//            tempX = getX() + 1;
-//            tempY = getY();
-//        }
-//        if(tempDir == left)
-//        {
-//            tempX = getX() - 1;
-//            tempY = getY();
-//        }
-//        if(tempDir == up)
-//        {
-//            tempX = getX();
-//            tempY = getY() + 1;
-//        }
-//        if(tempDir == down)
-//        {
-//            tempX = getX();
-//            tempY = getY() - 1;
-//        }
-        
         if(getStud()->open(this, tempX, tempY)) //open space
         {
             moveTo(tempX, tempY);
