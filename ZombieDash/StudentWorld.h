@@ -39,6 +39,8 @@ public:
     Exit *getExit() const;
     int getTicks() const;
     
+    bool overlapCitizenPenelope(Actor *sprite1, Actor *sprite2);
+    
 private:
     std::list<Actor*> actor;
     Penelope *m_penelope; //pointer to penelope

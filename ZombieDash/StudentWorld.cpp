@@ -79,7 +79,9 @@ int StudentWorld::init()
                     case Level::pit:
                         actor.push_back(new Pit(this, i*16, j*16));
                         break;
-                        //citizen
+                    case Level::citizen:
+                        actor.push_back(new Citizen(this, i*16, j*16));
+                        break;
                     default:
                         break;
                 }
@@ -385,6 +387,8 @@ void StudentWorld::closestZombieToCitizen(Actor *citizen, double &zombieX, doubl
 {
     double xDiff = 0.0;
     double yDiff = 0.0;
+    double disSqared = 0.0;
+    double tempDis = 0.0;
     for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
     {
         if((*it)->isLivingActor())
@@ -394,8 +398,35 @@ void StudentWorld::closestZombieToCitizen(Actor *citizen, double &zombieX, doubl
                 //(*it) must be a zombie
                 xDiff = citizen->getX() - (*it)->getX();
                 yDiff = citizen->getY() - (*it)->getY();
+                disSqared = (xDiff *xDiff) + (yDiff * yDiff);
+                tempDis = sqrt(disSqared);
                 
+                //want to find the shortest distance
+                if(tempDis < distance)
+                {
+                    distance = tempDis;
+                    zombieX = (*it)->getX();
+                    zombieY = (*it)->getY();
+                }
             }
         }
     }
+}
+
+
+bool StudentWorld::overlapCitizenPenelope(Actor *sprite1, Actor *sprite2)
+{
+    //find the center
+    const double x1 = (*sprite1).getX() + SPRITE_WIDTH/2 - 1;
+    const double y1 = (*sprite1).getY() + SPRITE_HEIGHT/2 -1;
+    const double x2 = (*sprite2).getX() + SPRITE_WIDTH/2 -1;
+    const double y2 = (*sprite2).getY() + SPRITE_HEIGHT/2 -1;
+    const double differenceX = x1 - x2;
+    const double differenceY = y1 - y2;
+    
+    //(∆x)2 + (∆y)2 ≤ 80
+    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 80) //does overlap
+        return true;
+    return false;
+    //true means that the citizen wants to follow penelope
 }

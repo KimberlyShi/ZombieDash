@@ -191,6 +191,65 @@ void Citizen::doSomething()
     double zombieX = 0.0;
     double zombieY = 0.0;
     getStud()->closestZombieToCitizen(this, zombieX, zombieY, dist_z);
+    
+    if(dist_p < dist_z || dist_z == 0) //no zombies on that level
+    {
+        //check Euclidean distance from penelope to citizen
+        //citizen wants to follow penelope
+        if(getStud()->overlapCitizenPenelope(this, getStud()->getPenelope()))
+        {
+            //check if in the same row or column as penelope
+            if(getX() == (getStud()->getPenelope())->getX() ||
+               getY() == (getStud()->getPenelope())->getY())
+            {
+                //check if can move 2 pixels in the direction toward penelope
+                double tempX = getX();
+                double tempY = getY();
+                switch((getStud()->getPenelope())->getDirection())
+                {
+                    case right:
+                    {
+                        tempX += 2;
+                        break;
+                    }
+                    case left:
+                    {
+                        tempX -= 2;
+                        break;
+                    }
+                    case up:
+                    {
+                        tempY += 2;
+                        break;
+                    }
+                    case down:
+                    {
+                        tempY -= 2;
+                        break;
+                    }
+                    default:
+                        break;
+                        
+                }
+                //check if those temp will actually overlap with anything
+                if(getStud()->open(this, tempX, tempY)) //the spot is open
+                {
+                    moveTo(tempX, tempY);
+                    return;
+                }
+                else //citizen would be blocked by something
+                {
+                    //skip to step 7
+                }
+            }
+            
+            //citizen is not on the same row or column
+            else
+            {
+                
+            }
+        }
+    }
 }
 
 void Citizen::setDead()
