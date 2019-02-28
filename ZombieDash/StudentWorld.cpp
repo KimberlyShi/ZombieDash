@@ -124,34 +124,15 @@ int StudentWorld::move()
             playSound(SOUND_LEVEL_FINISHED);
             return GWSTATUS_FINISHED_LEVEL;
         }
-        
-        
     }
     setGameStatText(statusLine());
     cleanDead();
-    //    if(!m_penelope->isAlive()) //penelope is no longer alive
-    //    {
-    //        decLives();
-    //        m_penelope->resetItems();
-    //        return GWSTATUS_PLAYER_DIED;
-    //    }
-    
     
     return GWSTATUS_CONTINUE_GAME;
 }
 
 void StudentWorld::cleanUp()
 {
-    //    list<Actor*>::iterator it = actor.begin();
-    
-    
-    //    while(it != actor.end())
-    //    {
-    //        delete *it;
-    //        actor.erase(it);
-    //        //it = actor.erase(it);
-    //
-    //    }
     list<Actor*>::iterator it;
     for ( list<Actor*>::iterator it = actor.begin(); it != actor.end();)
     {
@@ -166,11 +147,6 @@ Penelope* StudentWorld::getPenelope() const
     return m_penelope;
 }
 
-//Exit* StudentWorld::getExit() const
-//{
-//    return m_exit;
-//}
-
 int StudentWorld::getTicks() const
 {
     return m_numTicks;
@@ -179,10 +155,6 @@ int StudentWorld::getTicks() const
 //========
 void StudentWorld::cleanDead()
 {
-    //    list<Actor*>::iterator it = actor.begin();
-    
-    
-    //  while(it != actor.end())
     for ( list<Actor*>::iterator it = actor.begin(); it != actor.end();)
     {
         if((*it)->isAlive() == 1)
@@ -197,9 +169,7 @@ void StudentWorld::cleanDead()
 
 void StudentWorld::addActor(Actor *sprite)
 {
-    //    cout << "Success " << endl;
     actor.push_back(sprite);
-    //    cout << "status " << sprite->isAlive() << endl;
 }
 
 string StudentWorld::findLevel(int level)
@@ -494,16 +464,10 @@ void StudentWorld::closestZombieToCitizen(double citizenX, double citizenY, doub
             
             if(!((*it)->getCanExit())) //only zombie can't exit
             {
-                 //cout << "GOT HERE " << endl;
-                //(*it) must be a zombie
-//                xDiff = citizen->getX() - (*it)->getX();
-//                yDiff = citizen->getY() - (*it)->getY();
                 xDiff = citizenX - (*it)->getX();
                 yDiff = citizenY - (*it)->getY();
                 disSqared = (xDiff *xDiff) + (yDiff * yDiff);
                 tempDis = sqrt(disSqared);
-                
-//                cout << "tempDis " << tempDis << endl;
                 //want to find the shortest distance
                 
                 if(tempDis < distance)
@@ -511,8 +475,6 @@ void StudentWorld::closestZombieToCitizen(double citizenX, double citizenY, doub
                     distance = tempDis;
                     zombieX = (*it)->getX();
                     zombieY = (*it)->getY();
-                    // cout << "tempDis " << tempDis << endl;
-//                    cout << "GOT HERE " << endl;
                 }
             }
         }

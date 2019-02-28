@@ -16,7 +16,6 @@ Actor::Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAl
     m_canActivateMine = false;
     m_canExit = false;
     m_live = false;
-//    m_citizens = 0;
 };
 Actor::~Actor()
 {
@@ -242,7 +241,6 @@ bool Citizen::citizenZombie(double dist_z)
         if(getStud()->open(this, getX(), getY() - 2))//down
             getStud()->closestZombieToCitizen(getX(),getY() - 2, rx, ry, downD);
         
-//        std::cout << "RIGHT " << rightD << std::endl;
         double newDist = 0.0;
         
         //test if it was block by comparing to 256
@@ -253,34 +251,23 @@ bool Citizen::citizenZombie(double dist_z)
         {
             newDist = rightD;
             newDirection = right;
-           // rx = getX() + 2;
-//            rx += 2;
             citizenX = getX() + 2;
-            //ry = getY();
         }
         if (leftD != 256 && leftD > newDist && leftD > dist_z)
         {newDist = leftD;
             newDirection = left;
             citizenX = getX() - 2;
-           // rx -= 2;
-//            rx = getX() - 2;
-//            ry = getY();
         }
         if (upD != 256 && upD > newDist && upD > dist_z)
         {
         newDist = upD;
             newDirection = up;
-//            rx = getX();
-//            ry = getY() + 2;
-//            ry += 2;
             citizenY = getY() +  2;
         }
         if (downD != 256 && downD > newDist && downD > dist_z)
-        {newDist = downD;
+        {
+            newDist = downD;
             newDirection = down;
-//            rx = getX();
-//            ry = getY()-2;
-//            ry -= 2;
             citizenY = getY()- 2;
         }
 //        std::cout << "HERE??" << std::endl;
@@ -333,13 +320,12 @@ void Citizen::doSomething()
     }
     
     //calculate distance to penelope
-    //std::cout << "here " << std::endl;
     double xPenelopeDis = (getStud()->getPenelope())->getX() -getX();
     double yPenelopeDis = (getStud()->getPenelope())->getY() -getY();
     double dist_pSquared = (xPenelopeDis * xPenelopeDis) + (yPenelopeDis * yPenelopeDis);
     double dist_p = sqrt(dist_pSquared); //sqrt is a function imported from math.h
     
-   // std::cout << "distance to penelope " << dist_p << std::endl;
+
     double dist_z = 256.0;
     double zombieX = 0.0;
     double zombieY = 0.0;
@@ -348,10 +334,9 @@ void Citizen::doSomething()
     double tempX = getX();
     double tempY = getY();
     
-//    getStud()->closestZombieToCitizen(this, zombieX, zombieY, dist_z);
+
     getStud()->closestZombieToCitizen(getX(), getY(), zombieX, zombieY, dist_z);
-    //std::cout << "distance to zombie " << dist_z << std::endl;
-//    std::cout << "NO zombies "<< dist_z << std::endl;
+
     
     //implies that dist_z >80
     if((dist_p < dist_z || dist_z == 256) && dist_p <=80) //no zombies on that level
@@ -364,10 +349,6 @@ void Citizen::doSomething()
             if(getX() == (getStud()->getPenelope())->getX() ||
                getY() == (getStud()->getPenelope())->getY())
             {
-                
-//                double xPen = (getStud()->getPenelope())->getX();
-//                double yPen = (getStud()->getPenelope())->getY();
-                
                 Direction tempDir = 0;
                 //determine the direction towards penelope
                 if(xPen - getX() < 0) //penelope on citizen's left
@@ -386,20 +367,7 @@ void Citizen::doSomething()
                 {
                     tempDir = up;
                 }
-                
-                //check if can move 2 pixels in the direction toward penelope
-//                double tempX = getX();
-//                double tempY = getY();
-                
-               // tempPlace(tempX, tempY, tempDir); //will calculate 2 pixels
-                
-//                //check if those temp will actually overlap with anything
-//                if(getStud()->open(this, tempX, tempY)) //the spot is open
-//                {
-//                    setDirection(tempDir);
-//                    moveTo(tempX, tempY);
-//                    return;
-//                }
+        
                 if(tempPlace(tempX, tempY, tempDir)) //will calculate 2 pixels
                 { //was able to move
                     return;
@@ -477,9 +445,6 @@ void Citizen::doSomething()
                     citizenZombie(dist_z);
                     return;
                 }
-                
-                
-                
             }
         }
     }
@@ -750,10 +715,6 @@ Exit:: ~Exit()
 
 void Exit::doSomething()
 {
-    //determine overlap with Penelope
-    //FIXXXXXXXX can only exit if citizens are all exited or are dead
-    //FOR NOW: determine overlap
-    
     //see if citizen and exit will overlap
     getStud()->overlapExit(this);
     //see if penelope and exit overlap
@@ -813,11 +774,6 @@ void Goodies::increaseGoodie()
 {
     return;
 }
-
-//void Goodies::setDead()
-//{
-//    Actor::setDead(); //set status to dead
-//}
 
 VaccineGoodie::VaccineGoodie(StudentWorld* stud,double locX, double locY)
 :Goodies(stud, locX, locY, IID_VACCINE_GOODIE)
