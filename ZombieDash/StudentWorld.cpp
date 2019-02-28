@@ -32,7 +32,7 @@ int StudentWorld::init()
     Level lev(assetPath());
     // string levelFile = findLevel(getLevel());
     
-    string levelFile = "level02.txt"; //THIS IS JUST FOR TESTING USE COMMENT ABOVE FOR CORRECT IMPLEMENTATION
+    string levelFile = "level03.txt"; //THIS IS JUST FOR TESTING USE COMMENT ABOVE FOR CORRECT IMPLEMENTATION
     Level::LoadResult result = lev.loadLevel(levelFile);
     if (result == Level::load_fail_file_not_found)
         return GWSTATUS_LEVEL_ERROR;

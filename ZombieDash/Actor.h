@@ -44,6 +44,7 @@ public:
     void canExitTrue(); //only can be called in Penelope and citizen
     bool getCanExit() const;
     
+    void newDirection(double &tempX, double &tempY, Direction tempDir, double value);
     //        int numCitizens() const;
     //    void decCitizens();
     //    void incCitizens();
