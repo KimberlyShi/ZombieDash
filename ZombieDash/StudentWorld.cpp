@@ -69,9 +69,9 @@ int StudentWorld::init()
                         actor.push_back(new VaccineGoodie(this, i*16, j*16));
                         break;
                         
-//                    case Level::dumb_zombie:
-//                        actor.push_back(new DumbZombie(this, i*16, j*16));
-//                        break;
+                    case Level::dumb_zombie:
+                        actor.push_back(new DumbZombie(this, i*16, j*16));
+                        break;
                         //                    case Level::smart_zombie:
                         //                        actor.push_back(new DumbZombie(this, i*16, j*16));
                         //                        break;
@@ -79,9 +79,12 @@ int StudentWorld::init()
                     case Level::pit:
                         actor.push_back(new Pit(this, i*16, j*16));
                         break;
-//                    case Level::citizen:
-//                        actor.push_back(new Citizen(this, i*16, j*16));
-//                        break;
+                    case Level::citizen:
+                    {
+                        incCitizens();
+                        actor.push_back(new Citizen(this, i*16, j*16));
+                        break;
+                    }
                     default:
                         break;
                 }
@@ -340,6 +343,27 @@ bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
     return false;
 }
 
+//exit shoudl cal
+void StudentWorld::overlapExit(Actor *exit)
+{
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    {
+        if((*it)->getCanExit())
+        {
+            //check if overlap
+            //overlap will return true
+            if(overlap(exit, *it))
+            {
+                
+                (*it)->successExit();
+              //  return true; //there was overlap
+            }
+        }
+    }
+    
+    //return false;
+
+}
 void StudentWorld::overlapPit(Actor *pit)
 {
     //the objects that activate landmines (humans, zombies) will also die in pits
@@ -487,6 +511,7 @@ void StudentWorld::closestZombieToCitizen(double citizenX, double citizenY, doub
                     distance = tempDis;
                     zombieX = (*it)->getX();
                     zombieY = (*it)->getY();
+                    // cout << "tempDis " << tempDis << endl;
 //                    cout << "GOT HERE " << endl;
                 }
             }
@@ -510,4 +535,17 @@ bool StudentWorld::overlapCitizenPenelope(Actor *sprite1, Actor *sprite2)
         return true;
     return false;
     //true means that the citizen wants to follow penelope
+}
+
+int StudentWorld::numCitizens() const
+{
+    return m_citizens;
+}
+void StudentWorld::decCitizens()
+{
+    m_citizens--;
+}
+void StudentWorld::incCitizens()
+{
+    m_citizens++;
 }

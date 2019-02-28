@@ -44,7 +44,11 @@ public:
     void canExitTrue(); //only can be called in Penelope and citizen
     bool getCanExit() const; 
    
+//        int numCitizens() const;
+//    void decCitizens();
+//    void incCitizens();
     
+    void successExit();
     
     
     
@@ -58,6 +62,8 @@ private:
     bool m_canActivateMine;
     bool m_canExit; //default false //only citizen and penelope can exit and return true
     bool m_live;
+    
+//    int m_citizens;
 };
 //====HUMAN===
 class Human: public Actor
@@ -127,6 +133,8 @@ public:
     bool tempPlace(double &tempX, double &tempY, Direction tempDir);
     bool citizenZombie(double dist_z); //false-if no zombies
 //    void determineDirection(Direction &tempDir);
+    
+    
 };
 
 //=======WALL========================

@@ -22,6 +22,7 @@ public:
     bool overlap(Actor *sprite1, Actor *sprite2); //check if the object is overlapping
     //overlap will return true if there is overlap
     
+    void overlapExit(Actor *exit);
     bool overlapFlames(Actor *posFlame); //return true if there is overlap
     bool overlapLandmine(Actor *mine); //return true if there is overlap
     void overlapPit(Actor *pit);
@@ -42,12 +43,19 @@ public:
     
     bool overlapCitizenPenelope(Actor *sprite1, Actor *sprite2);
     
+    
+    int numCitizens() const;
+    void decCitizens();
+    void incCitizens();
+
+    
 private:
     std::list<Actor*> actor;
     Penelope *m_penelope; //pointer to penelope
 //    Wall *m_wall;
 //    Exit *m_exit;
     int m_numTicks;
+    int m_citizens;
 };
 
 #endif // STUDENTWORLD_H_

@@ -16,6 +16,7 @@ Actor::Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAl
     m_canActivateMine = false;
     m_canExit = false;
     m_live = false;
+//    m_citizens = 0;
 };
 Actor::~Actor()
 {
@@ -111,6 +112,27 @@ void Actor::setLivingActor()
     m_live = true;
 }
 
+//int Actor::numCitizens() const
+//{
+//    return m_citizens;
+//}
+//void Actor::decCitizens()
+//{
+//    m_citizens--;
+//}
+//void Actor::incCitizens()
+//{
+//    m_citizens++;
+//}
+
+void Actor::successExit()
+{
+    getStud()->decCitizens();
+    getStud()->playSound(SOUND_CITIZEN_SAVED);
+    getStud()->increaseScore(500);
+    Actor::setDead();
+    
+}
 //=========PENELOPE
 Human::Human(StudentWorld *stud, double locX, double locY, int imgid)
 :Actor(stud, locX, locY, imgid,2,right, 0, 1, true, false)
@@ -145,7 +167,8 @@ void Human::setInfectStat(bool val)
 Citizen::Citizen(StudentWorld *stud, double locX, double locY)
 :Human(stud, locX, locY, IID_CITIZEN)
 {
-    
+    //everytime constructed, increase number of citizens
+//    incCitizens();
 }
 
 bool Citizen::tempPlace(double &tempX, double &tempY, Direction tempDir)
@@ -187,22 +210,28 @@ bool Citizen::tempPlace(double &tempX, double &tempY, Direction tempDir)
     return false;
 }
 bool Citizen::citizenZombie(double dist_z)
-{
+{ //aka step 7 on pg 45 of spec
     //dist_z is the distance between the citizen and zombie
     //check if the distance is less than or equal to 80 pixels
     if(dist_z <= 80)
     {
         //rightD for example indicates distance for the respective direction
-        double rightD = -1.0;
+        double rightD = 256;
         double rx = 0.0; //coordinates of the closest zombie
         double ry = 0.0;
-        double leftD = -1.0;
-        double upD = -1.0;
-        double downD = -1.0;
+        double leftD = 256;
+        double upD = 256;
+        double downD = 256;
+        
         Direction newDirection = right; //just initialize to right but that's just temporary
+        
+        //check if where want to move is open
         //check distance for each of them
         if(getStud()->open(this, getX() + 2, getY()))//right
+        {
+            //closestZombieToCitizen will set rightD to the distance between citizen and the closest zombie
            getStud()->closestZombieToCitizen(getX() + 2,getY(), rx, ry, rightD);
+        }
         
         if(getStud()->open(this, getX() - 2, getY()))//left
             getStud()->closestZombieToCitizen(getX() - 2 ,getY(), rx, ry, leftD);
@@ -213,29 +242,56 @@ bool Citizen::citizenZombie(double dist_z)
         if(getStud()->open(this, getX(), getY() - 2))//down
             getStud()->closestZombieToCitizen(getX(),getY() - 2, rx, ry, downD);
         
+//        std::cout << "RIGHT " << rightD << std::endl;
         double newDist = 0.0;
-        if(rightD != -1.0 && rightD < newDist && rightD < dist_z)
-        { newDist = rightD;
+        
+        //test if it was block by comparing to 256
+        double citizenX = getX();
+        double citizenY = getY();
+        std::cout << "BEFORE X " << citizenX << " Y " << citizenY << std::endl;
+        if(rightD != 256 && rightD > newDist && rightD > dist_z)
+        {
+            newDist = rightD;
             newDirection = right;
+           // rx = getX() + 2;
+//            rx += 2;
+            citizenX = getX() + 2;
+            //ry = getY();
         }
-        if (leftD != -1.0 && leftD < newDist && leftD < dist_z)
+        if (leftD != 256 && leftD > newDist && leftD > dist_z)
         {newDist = leftD;
             newDirection = left;
+            citizenX = getX() - 2;
+           // rx -= 2;
+//            rx = getX() - 2;
+//            ry = getY();
         }
-        if (upD != -1.0 && upD < newDist && upD < dist_z)
+        if (upD != 256 && upD > newDist && upD > dist_z)
         {
         newDist = upD;
             newDirection = up;
+//            rx = getX();
+//            ry = getY() + 2;
+//            ry += 2;
+            citizenY = getY() +  2;
         }
-        if (downD != -1.0 && downD < newDist && downD < dist_z)
+        if (downD != 256 && downD > newDist && downD > dist_z)
         {newDist = downD;
             newDirection = down;
+//            rx = getX();
+//            ry = getY()-2;
+//            ry -= 2;
+            citizenY = getY()- 2;
         }
+//        std::cout << "HERE??" << std::endl;
         if(newDist == 0.0) //no movement will be farther
             return false;
         
+//        std::cout << "got here" << std::endl;
         setDirection(newDirection); //set the citizen to a new direction
-        //move citizen in that direction
+        moveTo(citizenX, citizenY); //move citizen in that direction
+        std::cout << "X " << getX() << " Y " << getY() << std::endl;
+        //std::cout << "X " << citizenX << " Y " << citizenY << std::endl;
         return true;
     }
     else //no zombie within euclidean distance
@@ -295,7 +351,10 @@ void Citizen::doSomething()
 //    getStud()->closestZombieToCitizen(this, zombieX, zombieY, dist_z);
     getStud()->closestZombieToCitizen(getX(), getY(), zombieX, zombieY, dist_z);
     //std::cout << "distance to zombie " << dist_z << std::endl;
-    if(dist_p < dist_z || dist_z == 256) //no zombies on that level
+//    std::cout << "NO zombies "<< dist_z << std::endl;
+    
+    //implies that dist_z >80
+    if((dist_p < dist_z || dist_z == 256) && dist_p <=80) //no zombies on that level
     {
         //check Euclidean distance from penelope to citizen
         //citizen wants to follow penelope
@@ -347,7 +406,9 @@ void Citizen::doSomething()
                 }
                 else //citizen would be blocked by something
                 {
-                    //STEP 7!!!!!
+                    //step 7
+                    citizenZombie(dist_z);
+                    return;
                 }
             }
             
@@ -393,6 +454,8 @@ void Citizen::doSomething()
                     
                     //if both directions don't work, then will go to step 7
                     //STEP 7!!!!
+                    citizenZombie(dist_z);
+                    return;
                 }
                 if(choose == 2)
                 {
@@ -411,6 +474,8 @@ void Citizen::doSomething()
                     
                     //FIX: need the alternate
                     //STEP 7!!!!
+                    citizenZombie(dist_z);
+                    return;
                 }
                 
                 
@@ -423,7 +488,11 @@ void Citizen::doSomething()
 void Citizen::setDead()
 {
     Actor::setDead();
+    getStud()->decCitizens(); //decrease the number of citizens
+     (getStud()) -> playSound(SOUND_CITIZEN_DIE); //play sound
+    getStud()->increaseScore(-1000); //decrease score by 1000 points
 }
+
 
 //PENELOPE====
 Penelope::Penelope(StudentWorld *stud, double locX, double locY)
@@ -685,11 +754,18 @@ void Exit::doSomething()
     //FIXXXXXXXX can only exit if citizens are all exited or are dead
     //FOR NOW: determine overlap
     
+    //see if citizen and exit will overlap
+    getStud()->overlapExit(this);
     //see if penelope and exit overlap
+    //check if there are any more citizens left
+    //only when all citizens have left or died can penelope leave
+    if (getStud()->numCitizens() == 0)
+    {
     if((getStud())->overlap(this, getStud()->getPenelope()))
     {
         setfinishedLevelTrue();
         return;
+    }
     }
 }
 
