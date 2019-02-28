@@ -148,6 +148,46 @@ Citizen::Citizen(StudentWorld *stud, double locX, double locY)
     
 }
 
+bool Citizen::tempPlace(double &tempX, double &tempY, Direction tempDir)
+{
+    switch(tempDir)
+    {
+        case right:
+        {
+            tempX += 2;
+            break;
+        }
+        case left:
+        {
+            tempX -= 2;
+            break;
+        }
+        case up:
+        {
+            tempY += 2;
+            break;
+        }
+        case down:
+        {
+            tempY -= 2;
+            break;
+        }
+        default:
+            break;
+            
+    }
+    
+    //check if those temp will actually overlap with anything
+    if(getStud()->open(this, tempX, tempY)) //the spot is open
+    {
+        setDirection(tempDir);
+        moveTo(tempX, tempY);
+        return true;
+    }
+    return false;
+}
+
+
 void Citizen::doSomething()
 {
  if(isAlive() == 1) //is dead
@@ -160,6 +200,7 @@ void Citizen::doSomething()
         //m_infectCount++;
         if(getInfectCount() >= 500)
         {
+            std::cout << "NOT " << std::endl;
             //becomes a zombie
             setDead(); //set status to dead
             (getStud()) -> playSound(SOUND_ZOMBIE_BORN); //play sound
@@ -182,17 +223,24 @@ void Citizen::doSomething()
     }
     
     //calculate distance to penelope
+    //std::cout << "here " << std::endl;
     double xPenelopeDis = (getStud()->getPenelope())->getX() -getX();
     double yPenelopeDis = (getStud()->getPenelope())->getY() -getY();
     double dist_pSquared = (xPenelopeDis * xPenelopeDis) + (yPenelopeDis * yPenelopeDis);
     double dist_p = sqrt(dist_pSquared); //sqrt is a function imported from math.h
     
-    double dist_z = 0.0;
+   // std::cout << "distance to penelope " << dist_p << std::endl;
+    double dist_z = 256.0;
     double zombieX = 0.0;
     double zombieY = 0.0;
-    getStud()->closestZombieToCitizen(this, zombieX, zombieY, dist_z);
+    double xPen = (getStud()->getPenelope())->getX();
+    double yPen = (getStud()->getPenelope())->getY();
+    double tempX = getX();
+    double tempY = getY();
     
-    if(dist_p < dist_z || dist_z == 0) //no zombies on that level
+    getStud()->closestZombieToCitizen(this, zombieX, zombieY, dist_z);
+    //std::cout << "distance to zombie " << dist_z << std::endl;
+    if(dist_p < dist_z || dist_z == 256) //no zombies on that level
     {
         //check Euclidean distance from penelope to citizen
         //citizen wants to follow penelope
@@ -202,50 +250,115 @@ void Citizen::doSomething()
             if(getX() == (getStud()->getPenelope())->getX() ||
                getY() == (getStud()->getPenelope())->getY())
             {
-                //check if can move 2 pixels in the direction toward penelope
-                double tempX = getX();
-                double tempY = getY();
-                switch((getStud()->getPenelope())->getDirection())
+                
+//                double xPen = (getStud()->getPenelope())->getX();
+//                double yPen = (getStud()->getPenelope())->getY();
+                
+                Direction tempDir = 0;
+                //determine the direction towards penelope
+                if(xPen - getX() < 0) //penelope on citizen's left
                 {
-                    case right:
-                    {
-                        tempX += 2;
-                        break;
-                    }
-                    case left:
-                    {
-                        tempX -= 2;
-                        break;
-                    }
-                    case up:
-                    {
-                        tempY += 2;
-                        break;
-                    }
-                    case down:
-                    {
-                        tempY -= 2;
-                        break;
-                    }
-                    default:
-                        break;
-                        
+                    tempDir = left;
                 }
-                //check if those temp will actually overlap with anything
-                if(getStud()->open(this, tempX, tempY)) //the spot is open
+                else if (xPen - getX() > 0)
                 {
-                    moveTo(tempX, tempY);
+                    tempDir = right;
+                }
+                else if(yPen - getY() < 0) //penelope below citizen
+                {
+                    tempDir = down;
+                }
+                else
+                {
+                    tempDir = up;
+                }
+                
+                //check if can move 2 pixels in the direction toward penelope
+//                double tempX = getX();
+//                double tempY = getY();
+                
+               // tempPlace(tempX, tempY, tempDir); //will calculate 2 pixels
+                
+//                //check if those temp will actually overlap with anything
+//                if(getStud()->open(this, tempX, tempY)) //the spot is open
+//                {
+//                    setDirection(tempDir);
+//                    moveTo(tempX, tempY);
+//                    return;
+//                }
+                if(tempPlace(tempX, tempY, tempDir)) //will calculate 2 pixels
+                { //was able to move
                     return;
                 }
                 else //citizen would be blocked by something
                 {
-                    //skip to step 7
+                    //STEP 7!!!!!
                 }
             }
             
             //citizen is not on the same row or column
             else
             {
+                //determine direction closest
+                Direction tempXDir = 0;
+                Direction tempYDir = 0;
+                if(xPen - getX() < 0) //penelope on citizen's left
+                {
+                    tempXDir = left;
+                }
+                if (xPen - getX() > 0)
+                {
+                    tempXDir = right;
+                }
+               if(yPen - getY() < 0) //penelope below citizen
+                {
+                    tempYDir = down;
+                }
+                 if(yPen - getY() > 0)
+                {
+                    tempYDir = up;
+                }
+                
+                int choose = randInt(1, 2); //1 will be direction tempX
+                //2 will be direction tempY
+                if(choose == 1)
+                {
+                    //tempX
+                    if(tempPlace(tempX, tempY, tempXDir))
+                        return;
+                    //flip the direction
+                    if(tempXDir == right)
+                        tempXDir = left;
+                    else
+                        tempXDir = right;
+                    
+                    //try to move in the other direction
+                    if(tempPlace(tempX, tempY, tempXDir))
+                        return;
+                    
+                    //if both directions don't work, then will go to step 7
+                    //STEP 7!!!!
+                }
+                if(choose == 2)
+                {
+                    //tempY
+                     if(tempPlace(tempX, tempY, tempYDir))
+                         return;
+                    
+                    if(tempYDir == up)
+                        tempYDir = down;
+                    else
+                        tempYDir = up;
+                    
+                    //try to move in the other direction
+                    if(tempPlace(tempX, tempY, tempYDir))
+                        return;
+                    
+                    //FIX: need the alternate
+                    //STEP 7!!!!
+                }
+                
+                
                 
             }
         }
@@ -254,7 +367,7 @@ void Citizen::doSomething()
 
 void Citizen::setDead()
 {
-    
+    Actor::setDead();
 }
 
 //PENELOPE====
@@ -422,7 +535,7 @@ void Penelope::doSomething()
                         }
                         //check if that temp location will overlap with wall or exit
                         //first create the new flames object
-                        Flames *newFlame = new Flames(getStud(), tempX, tempY, getDirection());
+                        Flames *newFlame = new Flames(getStud(), tempX, tempY, up);
                         //check if it will overlap
                         //  std::cout << "COUNTTT: " << count << " X: " << tempX << " Y: " << tempY << std::endl;
                         if(getStud()->overlapFlames(newFlame))//there was overlap

@@ -69,9 +69,9 @@ int StudentWorld::init()
                         actor.push_back(new VaccineGoodie(this, i*16, j*16));
                         break;
                         
-                    case Level::dumb_zombie:
-                        actor.push_back(new DumbZombie(this, i*16, j*16));
-                        break;
+//                    case Level::dumb_zombie:
+//                        actor.push_back(new DumbZombie(this, i*16, j*16));
+//                        break;
                         //                    case Level::smart_zombie:
                         //                        actor.push_back(new DumbZombie(this, i*16, j*16));
                         //                        break;
@@ -393,20 +393,25 @@ void StudentWorld::closestZombieToCitizen(Actor *citizen, double &zombieX, doubl
     {
         if((*it)->isLivingActor())
         {
+            
             if(!((*it)->getCanExit())) //only zombie can't exit
             {
+                 //cout << "GOT HERE " << endl;
                 //(*it) must be a zombie
                 xDiff = citizen->getX() - (*it)->getX();
                 yDiff = citizen->getY() - (*it)->getY();
                 disSqared = (xDiff *xDiff) + (yDiff * yDiff);
                 tempDis = sqrt(disSqared);
                 
+//                cout << "tempDis " << tempDis << endl;
                 //want to find the shortest distance
+                
                 if(tempDis < distance)
                 {
                     distance = tempDis;
                     zombieX = (*it)->getX();
                     zombieY = (*it)->getY();
+//                    cout << "GOT HERE " << endl;
                 }
             }
         }
@@ -425,7 +430,7 @@ bool StudentWorld::overlapCitizenPenelope(Actor *sprite1, Actor *sprite2)
     const double differenceY = y1 - y2;
     
     //(∆x)2 + (∆y)2 ≤ 80
-    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 80) //does overlap
+    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 80 * 80) //does overlap
         return true;
     return false;
     //true means that the citizen wants to follow penelope

@@ -124,6 +124,8 @@ public:
     Citizen(StudentWorld *stud, double locX, double locY);
     virtual void doSomething();
     virtual void setDead();
+    bool tempPlace(double &tempX, double &tempY, Direction tempDir);
+//    void determineDirection(Direction &tempDir);
 };
 
 //=======WALL========================
