@@ -270,6 +270,9 @@ public:
 //    double vomitX();
 //    double vomitY();
     //accessor
+    
+    void randDirection();
+    
     int getPlanDistance() const;
     
     //mutator

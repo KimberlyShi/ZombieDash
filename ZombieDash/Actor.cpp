@@ -1212,6 +1212,18 @@ void Zombie::movementPlan()
     return;
 }
 
+void Zombie::randDirection()
+{
+    int newDirection = randInt(1,4);
+    if(newDirection == 1)
+        setDirection(right);
+    if(newDirection == 2)
+        setDirection(left);
+    if(newDirection == 3)
+        setDirection(up);
+    if(newDirection == 4)
+        setDirection(down);
+}
 
 DumbZombie::DumbZombie(StudentWorld *stud,double locX, double locY)
 :Zombie(stud, locX, locY)
@@ -1228,15 +1240,16 @@ void DumbZombie::movementPlan()
     
     int newMove = randInt(3, 10);
     setPlanDistance(newMove);
-    int newDirection = randInt(1,4);
-    if(newDirection == 1)
-        setDirection(right);
-    if(newDirection == 2)
-        setDirection(left);
-    if(newDirection == 3)
-        setDirection(up);
-    if(newDirection == 4)
-        setDirection(down);
+    randDirection();
+//    int newDirection = randInt(1,4);
+//    if(newDirection == 1)
+//        setDirection(right);
+//    if(newDirection == 2)
+//        setDirection(left);
+//    if(newDirection == 3)
+//        setDirection(up);
+//    if(newDirection == 4)
+//        setDirection(down);
     
 }
 
@@ -1252,15 +1265,33 @@ void DumbZombie::setDead()
     if(random == 1) //has vaccine goodie
     {
         //choose a random direction
-        int newDirection = randInt(1,4);
-        if(newDirection == 1)
-            setDirection(right);
-        if(newDirection == 2)
-            setDirection(left);
-        if(newDirection == 3)
-            setDirection(up);
-        if(newDirection == 4)
-            setDirection(down);
+        randDirection();
+        double tempX = 0.0;
+        double tempY = 0.0;
+        newDirection(tempX, tempY, getDirection(), SPRITE_WIDTH);
+        
+        //create a temp new vaccine goodie
+        VaccineGoodie *temp = new VaccineGoodie(getStud(), tempX, tempY);
+        
+        //check if that spot is open
+        if(getStud()->open(temp, tempX, tempY))
+        {
+            //open so will fling the vaccineGoodie
+            getStud()->addActor(temp);
+        }
+        else
+            delete temp;
+        
+        
+//        int newDirection = randInt(1,4);
+//        if(newDirection == 1)
+//            setDirection(right);
+//        if(newDirection == 2)
+//            setDirection(left);
+//        if(newDirection == 3)
+//            setDirection(up);
+//        if(newDirection == 4)
+//            setDirection(down);
     }
 }
 
@@ -1287,15 +1318,16 @@ void SmartZombie::movementPlan()
     if(distance >80)
     {
         //choose a random direction
-        int newDirection = randInt(1,4);
-        if(newDirection == 1)
-            setDirection(right);
-        if(newDirection == 2)
-            setDirection(left);
-        if(newDirection == 3)
-            setDirection(up);
-        if(newDirection == 4)
-            setDirection(down);
+        randDirection();
+//        int newDirection = randInt(1,4);
+//        if(newDirection == 1)
+//            setDirection(right);
+//        if(newDirection == 2)
+//            setDirection(left);
+//        if(newDirection == 3)
+//            setDirection(up);
+//        if(newDirection == 4)
+//            setDirection(down);
         
     }
     else
