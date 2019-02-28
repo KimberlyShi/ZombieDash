@@ -16,6 +16,9 @@ Actor::Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAl
     m_canActivateMine = false;
     m_canExit = false;
     m_live = false;
+    
+    m_infectStat = false; //infection status starts off as false
+    m_infectCount = 0; //infection count is 0
 };
 Actor::~Actor()
 {
@@ -132,36 +135,54 @@ void Actor::successExit()
     Actor::setDead();
     
 }
+bool Actor::getInfectStat() const
+{
+    return m_infectStat;
+}
+int Actor::getInfectCount() const
+{
+    return m_infectCount;
+}
+
+void Actor::increaseInfectCount()
+{
+    m_infectCount++;
+}
+
+void Actor::setInfectStat(bool val)
+{
+    m_infectStat = val;
+}
 //=========PENELOPE
 Human::Human(StudentWorld *stud, double locX, double locY, int imgid)
 :Actor(stud, locX, locY, imgid,2,right, 0, 1, true, false)
 {
-    m_infectStat = false; //infection status starts off as false
-    m_infectCount = 0; //infection count is 0
+//    m_infectStat = false; //infection status starts off as false
+//    m_infectCount = 0; //infection count is 0
     canExitTrue();
     setFlameCanDamage(true); //can be damaged by flames
     setActivation(); //can activate landmines
     setLivingActor();
 }
 
-bool Human::getInfectStat() const
-{
-    return m_infectStat;
-}
-int Human::getInfectCount() const
-{
-    return m_infectCount;
-}
-
-void Human::increaseInfectCount()
-{
-    m_infectCount++;
-}
-
-void Human::setInfectStat(bool val)
-{
-    m_infectStat = val;
-}
+//bool Human::getInfectStat() const
+//{
+//    return m_infectStat;
+//}
+//int Human::getInfectCount() const
+//{
+//    return m_infectCount;
+//}
+//
+//void Human::increaseInfectCount()
+//{
+//    m_infectCount++;
+//}
+//
+//void Human::setInfectStat(bool val)
+//{
+//    m_infectStat = val;
+//}
 //CITIZEN=====
 Citizen::Citizen(StudentWorld *stud, double locX, double locY)
 :Human(stud, locX, locY, IID_CITIZEN)
@@ -265,7 +286,7 @@ void Citizen::doSomething()
         //m_infectCount++;
         if(getInfectCount() >= 500)
         {
-            std::cout << "NOT " << std::endl;
+//            std::cout << "NOT " << std::endl;
             //becomes a zombie
             setDead(); //set status to dead
             (getStud()) -> playSound(SOUND_ZOMBIE_BORN); //play sound
@@ -983,7 +1004,63 @@ void Zombie::doSomething()
     double tempVomitY = vomitY();
     
     //Step 3: Direction + compute vomit coordinates
+    //compute possible coordinates
     //check direction of Person
+    Direction current = getDirection();
+    double vomitX = 0.0;
+    double vomitY = 0.0;
+    switch(current)
+    {
+        case right:
+        {
+            vomitX = getX() + SPRITE_WIDTH;
+            vomitY = getY();
+            break;
+        }
+        case left:
+        {
+            vomitX = getX() - SPRITE_WIDTH;
+            vomitY = getY();
+            break;
+        }
+        case up:
+        {
+            vomitX = getX();
+            vomitY = getY() + SPRITE_HEIGHT;
+            break;
+        }
+        case down:
+        {
+            vomitX = getX();
+            vomitY = getY() - SPRITE_HEIGHT;
+            break;
+        }
+        default:
+            break;
+            
+    }
+    
+    //create temp Vomit
+    Vomit *temp = new Vomit(getStud(), vomitX, vomitY, getDirection());
+    if(getStud()->overlapLiving(temp)) //there was overlap
+    {
+        //there will be a 1/3 chance that the zombie will vomit
+        int vomitChance = randInt(1, 3);
+        if(vomitChance == 1) //will only vomit if the random number is 1
+        {
+        getStud()->addActor(temp);
+        getStud()->playSound(SOUND_ZOMBIE_VOMIT);
+        return;
+        }
+        else
+            delete temp;
+    }
+    else
+    {
+        delete temp;
+    }
+    
+    //check to
     //Step 4: Movement Plan (will be DIFFERENT for dumb and smart zombie)
     if(m_planDistance == 0)
         movementPlan(); //set new movement plan
@@ -1098,7 +1175,12 @@ void DumbZombie::movementPlan()
     
 }
 
-
+void DumbZombie::setDead()
+{
+    Actor::setDead();
+    getStud()->increaseScore(1000);
+    getStud()->playSound(SOUND_ZOMBIE_DIE);
+}
 SmartZombie::SmartZombie(StudentWorld *stud, double locX, double locY)
 :Zombie(stud, locX, locY)
 {
@@ -1175,3 +1257,9 @@ void SmartZombie::movementPlan()
     }
 }
 
+void SmartZombie::setDead()
+{
+    Actor::setDead();
+    getStud()->increaseScore(2000);
+        getStud()->playSound(SOUND_ZOMBIE_DIE);
+}

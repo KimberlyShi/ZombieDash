@@ -320,6 +320,36 @@ bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
     return false;
 }
 
+bool StudentWorld::overlapLiving(Actor *vomit)
+{
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    {
+        if((*it)->isLivingActor())
+        {
+            //since zombie is also a living actor, check if the object can exit
+            if((*it)->getCanExit())
+            {
+            //check if overlap
+            //overlap will return true
+            if(overlap(vomit, *it))
+            {
+                
+                (*it)->setInfectStat(true);
+                return true; //there was overlap
+            }
+            }
+        }
+    }
+    
+    //check if overlap with penelope
+    if(overlap(vomit, m_penelope))
+    {
+        
+        m_penelope->setInfectStat(true);
+        return true; //there was overlap
+    }
+    return false;
+}
 //exit shoudl cal
 void StudentWorld::overlapExit(Actor *exit)
 {

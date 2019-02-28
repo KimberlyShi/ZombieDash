@@ -50,7 +50,10 @@ public:
     
     void successExit();
     
-    
+    bool getInfectStat() const;
+    int getInfectCount() const;
+    void increaseInfectCount();
+    void setInfectStat(bool val);
     
 private:
     StudentWorld *m_stud;
@@ -63,6 +66,9 @@ private:
     bool m_canExit; //default false //only citizen and penelope can exit and return true
     bool m_live;
     
+    bool m_infectStat;
+    int m_infectCount;
+    
     //    int m_citizens;
 };
 //====HUMAN===
@@ -72,14 +78,14 @@ public:
     //Penelope::Penelope(StudentWorld *stud, double locX, double locY)
     // :Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
     Human(StudentWorld *stud, double locX, double locY, int imgid);
-    bool getInfectStat() const;
-    int getInfectCount() const;
-    void increaseInfectCount();
-    void setInfectStat(bool val);
+//    bool getInfectStat() const;
+//    int getInfectCount() const;
+//    void increaseInfectCount();
+//    void setInfectStat(bool val);
     
 private:
-    bool m_infectStat;
-    int m_infectCount;
+//    bool m_infectStat;
+//    int m_infectCount;
 };
 //======PENLEOPE=============
 class Penelope: public Human
@@ -280,7 +286,7 @@ class DumbZombie: public Zombie
 public:
     DumbZombie(StudentWorld *stud, double locX, double locY);
     virtual ~DumbZombie();
-    //     virtual void setDead();
+         virtual void setDead();
     
 private:
     virtual void movementPlan();
@@ -291,7 +297,7 @@ class SmartZombie: public Zombie
 public:
     SmartZombie(StudentWorld *stud, double locX, double locY);
     virtual ~SmartZombie();
-    //     virtual void setDead();
+         virtual void setDead();
 private:
     virtual void movementPlan();
 };
