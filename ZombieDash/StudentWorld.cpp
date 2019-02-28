@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream> //for findLevel
 #include <iomanip> //for findLevel
+#include <math.h> //use sqrt to find distance
 #include "Level.h"
 using namespace std;
 
@@ -74,7 +75,7 @@ int StudentWorld::init()
                         //                    case Level::smart_zombie:
                         //                        actor.push_back(new DumbZombie(this, i*16, j*16));
                         //                        break;
-                    
+                        
                     case Level::pit:
                         actor.push_back(new Pit(this, i*16, j*16));
                         break;
@@ -101,11 +102,11 @@ int StudentWorld::move()
     // This code is here merely to allow the game to build, run, and terminate after you hit enter.
     // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
     //list<Actor*>::iterator it;
-   
+    
     for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
     {
         (*it)->doSomething();
-       
+        
         if(m_penelope->isAlive() == 1) //penelope is no longer alive
         {
             decLives();
@@ -118,34 +119,34 @@ int StudentWorld::move()
             playSound(SOUND_LEVEL_FINISHED);
             return GWSTATUS_FINISHED_LEVEL;
         }
-
-       
+        
+        
     }
-      setGameStatText(statusLine());
+    setGameStatText(statusLine());
     cleanDead();
-//    if(!m_penelope->isAlive()) //penelope is no longer alive
-//    {
-//        decLives();
-//        m_penelope->resetItems();
-//        return GWSTATUS_PLAYER_DIED;
-//    }
+    //    if(!m_penelope->isAlive()) //penelope is no longer alive
+    //    {
+    //        decLives();
+    //        m_penelope->resetItems();
+    //        return GWSTATUS_PLAYER_DIED;
+    //    }
     
-   
+    
     return GWSTATUS_CONTINUE_GAME;
 }
 
 void StudentWorld::cleanUp()
 {
-//    list<Actor*>::iterator it = actor.begin();
+    //    list<Actor*>::iterator it = actor.begin();
     
     
-//    while(it != actor.end())
-//    {
-//        delete *it;
-//        actor.erase(it);
-//        //it = actor.erase(it);
-//
-//    }
+    //    while(it != actor.end())
+    //    {
+    //        delete *it;
+    //        actor.erase(it);
+    //        //it = actor.erase(it);
+    //
+    //    }
     list<Actor*>::iterator it;
     for ( list<Actor*>::iterator it = actor.begin(); it != actor.end();)
     {
@@ -172,11 +173,11 @@ int StudentWorld::getTicks() const
 //========
 void StudentWorld::cleanDead()
 {
-//    list<Actor*>::iterator it = actor.begin();
+    //    list<Actor*>::iterator it = actor.begin();
     
     
-  //  while(it != actor.end())
-      for ( list<Actor*>::iterator it = actor.begin(); it != actor.end();)
+    //  while(it != actor.end())
+    for ( list<Actor*>::iterator it = actor.begin(); it != actor.end();)
     {
         if((*it)->isAlive() == 1)
         {
@@ -190,9 +191,9 @@ void StudentWorld::cleanDead()
 
 void StudentWorld::addActor(Actor *sprite)
 {
-//    cout << "Success " << endl;
+    //    cout << "Success " << endl;
     actor.push_back(sprite);
-//    cout << "status " << sprite->isAlive() << endl;
+    //    cout << "status " << sprite->isAlive() << endl;
 }
 
 string StudentWorld::findLevel(int level)
@@ -296,7 +297,7 @@ bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
     const double y2 = (*sprite2).getY() + SPRITE_HEIGHT/2 -1;
     const double differenceX = x1 - x2;
     const double differenceY = y1 - y2;
-
+    
     //(∆x)2 + (∆y)2 ≤ 10 //that means that there was overlap
     if(((differenceX * differenceX) + (differenceY * differenceY)) <= 10*10) //does overlap
         return true;
@@ -305,11 +306,11 @@ bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
 
 void StudentWorld::overlapPit(Actor *pit)
 {
-     //the objects that activate landmines (humans, zombies) will also die in pits
+    //the objects that activate landmines (humans, zombies) will also die in pits
     //traverse through actor
     for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
     {
-        if((*it)->canActivateMine()) //only wall or exit can block flames
+        if((*it)->canActivateMine())
         {
             //check if overlap
             //overlap will return true
@@ -326,7 +327,7 @@ bool StudentWorld::overlapLandmine(Actor *mine)
     //traverse through actor
     for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
     {
-        if((*it)->canActivateMine()) //only wall or exit can block flames
+        if((*it)->canActivateMine())
         {
             //check if overlap
             //overlap will return true
@@ -344,7 +345,7 @@ bool StudentWorld::overlapFlames(Actor *posFlame)
     {
         if((*it)->canBlockFlames()) //only wall or exit can block flames
         {
-           //check if overlap
+            //check if overlap
             //overlap will return true
             if(overlap(posFlame, *it))
                 return true;
@@ -359,22 +360,42 @@ void StudentWorld::flameDamages(Actor *flame)
     //see if it overlaps and do damages accordingly
     for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
     {
-       if((*it)->flameCanDamage())
-       {
+        if((*it)->flameCanDamage())
+        {
             //check if overlap
-             if(overlap(flame, *it)) //overlap will return true
-             {
-                 //do appropriate damages
-                 //damages can happen to the following:
-                 //penelope --NOT tested
-                 //zombies --NOT implemented
-                 //goodies -- WORKS :)
-                 //landmines -- NOT implemented
+            if(overlap(flame, *it)) //overlap will return true
+            {
+                //do appropriate damages
+                //damages can happen to the following:
+                //penelope --NOT tested
+                //zombies --NOT implemented
+                //goodies -- WORKS :)
+                //landmines -- NOT implemented
                 
-                 (*it)->setDead(); //right now, working for goodies
-    
-                 
-             }
-       }
+                (*it)->setDead(); //right now, working for goodies
+                
+                
+            }
+        }
+    }
+}
+
+
+void StudentWorld::closestZombieToCitizen(Actor *citizen, double &zombieX, double &zombieY, double &distance)
+{
+    double xDiff = 0.0;
+    double yDiff = 0.0;
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    {
+        if((*it)->isLivingActor())
+        {
+            if(!((*it)->getCanExit())) //only zombie can't exit
+            {
+                //(*it) must be a zombie
+                xDiff = citizen->getX() - (*it)->getX();
+                yDiff = citizen->getY() - (*it)->getY();
+                
+            }
+        }
     }
 }

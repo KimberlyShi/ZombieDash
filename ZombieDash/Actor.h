@@ -36,6 +36,13 @@ public:
     virtual void setDead();
     void setfinishedLevelTrue();
     
+    bool isLivingActor() const; //not to be confused with the status of isAlive()
+    //isAlive() refers to whether or not the object is still valid
+    //living actor: zombie, penelope, citizen AND dead actor is everything else
+    void setLivingActor();
+    
+    void canExitTrue(); //only can be called in Penelope and citizen
+    bool getCanExit() const; 
    
     
     
@@ -49,6 +56,8 @@ private:
     bool m_canBlockFlames;
     bool m_flameCanDamage;
     bool m_canActivateMine;
+    bool m_canExit; //default false //only citizen and penelope can exit and return true
+    bool m_live;
 };
 //====HUMAN===
 class Human: public Actor
@@ -107,6 +116,14 @@ private:
     int m_dir;
     bool canBlock;
     
+};
+
+class Citizen: public Human
+{
+public:
+    Citizen(StudentWorld *stud, double locX, double locY);
+    virtual void doSomething();
+    virtual void setDead();
 };
 
 //=======WALL========================

@@ -1,5 +1,6 @@
 #include "Actor.h"
 #include "StudentWorld.h"
+#include <math.h>
 
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
@@ -13,6 +14,8 @@ Actor::Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAl
     m_levelStatus = false;
     m_canBlockFlames = canBlockFlames;
     m_canActivateMine = false;
+    m_canExit = false;
+    m_live = false;
 };
 Actor::~Actor()
 {
@@ -23,6 +26,7 @@ void Actor::doSomething()
 {
     return;
 }
+
 
 double Actor::getSpriteWidth() const
 {
@@ -83,9 +87,28 @@ void Actor::setfinishedLevelTrue()
     m_levelStatus = true;
 }
 
+void Actor::canExitTrue() //only can be called in Penelope and citizen
+{
+    m_canExit = true;
+}
+bool Actor::getCanExit() const
+{
+    return m_canExit;
+}
 StudentWorld *Actor::getStud() const
 {
     return m_stud;
+}
+
+bool Actor::isLivingActor() const //not to be confused with the status of isAlive()
+//isAlive() refers to whether or not the object is still valid
+//living actor: zombie, penelope, citizen AND dead actor is everything else
+{
+    return m_live;
+}
+void Actor::setLivingActor()
+{
+    m_live = true;
 }
 
 //=========PENELOPE
@@ -94,9 +117,10 @@ Human::Human(StudentWorld *stud, double locX, double locY, int imgid)
 {
     m_infectStat = false; //infection status starts off as false
     m_infectCount = 0; //infection count is 0
-
+    canExitTrue();
     setFlameCanDamage(true); //can be damaged by flames
     setActivation(); //can activate landmines
+    setLivingActor();
 }
 
 bool Human::getInfectStat() const
@@ -117,6 +141,64 @@ void Human::setInfectStat(bool val)
 {
     m_infectStat = val;
 }
+//CITIZEN=====
+Citizen::Citizen(StudentWorld *stud, double locX, double locY)
+:Human(stud, locX, locY, IID_CITIZEN)
+{
+    
+}
+
+void Citizen::doSomething()
+{
+ if(isAlive() == 1) //is dead
+     return;
+    
+    if(getInfectStat() == true) //if citizen is infected
+    {
+        //she's infected so increase infection count
+        increaseInfectCount();
+        //m_infectCount++;
+        if(getInfectCount() >= 500)
+        {
+            //becomes a zombie
+            setDead(); //set status to dead
+            (getStud()) -> playSound(SOUND_ZOMBIE_BORN); //play sound
+            getStud()->increaseScore(-1000); //decrease player score
+            
+            int probability = randInt(1, 10);
+            if(probability >= 1 && probability <=7) //70% chance become dumb
+                getStud()->addActor(new DumbZombie(getStud(), getX(), getY()));
+            else //will either be 8,9,10 (30% probability)
+               getStud()->addActor(new SmartZombie(getStud(), getX(), getY()));
+            return;
+        }
+    
+        return; //??? NOT SURE IF THIS IS CORRECT?????
+    }
+    
+    if(getStud()->getTicks() % 2 == 0) //even tick
+    {
+        return; //paralyzed
+    }
+    
+    //calculate distance to penelope
+    double xPenelopeDis = (getStud()->getPenelope())->getX() -getX();
+    double yPenelopeDis = (getStud()->getPenelope())->getY() -getY();
+    double dist_pSquared = (xPenelopeDis * xPenelopeDis) + (yPenelopeDis * yPenelopeDis);
+    double dist_p = sqrt(dist_pSquared); //sqrt is a function imported from math.h
+    
+    double dist_z = 0.0;
+    double zombieX = 0.0;
+    double zombieY = 0.0;
+    getStud()->closestZombieToCitizen(this, zombieX, zombieY, dist_z);
+}
+
+void Citizen::setDead()
+{
+    
+}
+
+//PENELOPE====
 Penelope::Penelope(StudentWorld *stud, double locX, double locY)
 //:Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
 :Human(stud, locX, locY, IID_PLAYER)
@@ -185,6 +267,8 @@ void Penelope::resetItems()
 //Penelope's Functions
 void Penelope::doSomething()
 {
+    if(isAlive() == 1) //dead already
+        return;
     if(getInfectStat() == true) //if she's infected
     {
         //she's infected so increase infection count
@@ -338,7 +422,7 @@ bool Penelope::isValid(double x, double y)
 void Penelope::setDead()
 {
     Actor::setDead();
-    getStud()->increaseScore(-1000); //decrease score by 1000
+//    getStud()->increaseScore(-1000); //decrease score by 1000
     getStud()->playSound(SOUND_PLAYER_DIE);
 }
 //=========WAll
@@ -671,6 +755,7 @@ Zombie::Zombie(StudentWorld *stud, double locX, double locY)
     m_planDistance = 0;
     setFlameCanDamage(true); //zombies can be affected by flames
     setActivation(); //can activate landmines
+    setLivingActor();
 }
 
 Zombie::~Zombie()
