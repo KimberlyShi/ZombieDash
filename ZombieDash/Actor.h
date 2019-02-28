@@ -20,8 +20,8 @@ public:
     //make accessors to all the different ones
     int isAlive() const; //check status of alive
     StudentWorld *getStud() const;
-//    double getSpriteWidth() const;
-//    double getSpriteHeight() const;
+    //    double getSpriteWidth() const;
+    //    double getSpriteHeight() const;
     bool getCanBlock() const;
     bool finishedLevel() const; //true indicates that Penelope finished
     
@@ -79,14 +79,14 @@ public:
     //Penelope::Penelope(StudentWorld *stud, double locX, double locY)
     // :Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
     Human(StudentWorld *stud, double locX, double locY, int imgid);
-//    bool getInfectStat() const;
-//    int getInfectCount() const;
-//    void increaseInfectCount();
-//    void setInfectStat(bool val);
+    //    bool getInfectStat() const;
+    //    int getInfectCount() const;
+    //    void increaseInfectCount();
+    //    void setInfectStat(bool val);
     
 private:
-//    bool m_infectStat;
-//    int m_infectCount;
+    //    bool m_infectStat;
+    //    int m_infectCount;
 };
 //======PENLEOPE=============
 class Penelope: public Human
@@ -137,7 +137,7 @@ public:
     Citizen(StudentWorld *stud, double locX, double locY);
     virtual void doSomething();
     virtual void setDead();
-   // bool tempPlace(double &tempX, double &tempY, Direction tempDir);
+    // bool tempPlace(double &tempX, double &tempY, Direction tempDir);
     bool citizenZombie(double dist_z); //false-if no zombies
     //    void determineDirection(Direction &tempDir);
     
@@ -267,8 +267,8 @@ public:
     Zombie(StudentWorld *stud, double locX, double locY);
     virtual ~Zombie();
     virtual void doSomething();
-//    double vomitX();
-//    double vomitY();
+    //    double vomitX();
+    //    double vomitY();
     //accessor
     
     void randDirection();
@@ -290,7 +290,7 @@ class DumbZombie: public Zombie
 public:
     DumbZombie(StudentWorld *stud, double locX, double locY);
     virtual ~DumbZombie();
-         virtual void setDead();
+    virtual void setDead();
     
 private:
     virtual void movementPlan();
@@ -301,7 +301,7 @@ class SmartZombie: public Zombie
 public:
     SmartZombie(StudentWorld *stud, double locX, double locY);
     virtual ~SmartZombie();
-         virtual void setDead();
+    virtual void setDead();
 private:
     virtual void movementPlan();
 };

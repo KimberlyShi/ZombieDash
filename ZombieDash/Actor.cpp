@@ -2,13 +2,9 @@
 #include "StudentWorld.h"
 #include <math.h>
 
-
-// Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
-//Actor base class implementation
 Actor::Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock, bool canBlockFlames)
 :GraphObject(imgid, locX, locY, dir, depth, size)
 {
-//    std::cout << "VIEW_WIDTH" << VIEW_WIDTH << std::endl;
     m_status = statAlive;
     m_stud = stud;
     m_canBlock = canBlock;
@@ -22,14 +18,10 @@ Actor::Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAl
     m_infectCount = 0; //infection count is 0
 };
 Actor::~Actor()
-{
-    
-}
+{}
 
 void Actor::doSomething()
-{
-    return;
-}
+{}
 
 bool Actor::getCanBlock() const
 {
@@ -185,7 +177,7 @@ bool Citizen::citizenZombie(double dist_z)
         double upD = VIEW_HEIGHT;
         double downD = VIEW_HEIGHT;
         
-       
+        
         
         //check if where want to move is open
         //check distance for each of them
@@ -209,7 +201,7 @@ bool Citizen::citizenZombie(double dist_z)
         //test if it was block by comparing to 256
         double citizenX = getX();
         double citizenY = getY();
-         Direction newDirection = right; //just initialize to right but that's just temporary
+        Direction newDirection = right; //just initialize to right but that's just temporary
         
         //std::cout << "BEFORE X " << citizenX << " Y " << citizenY << std::endl;
         if(rightD != VIEW_WIDTH && rightD > newDist && rightD > dist_z)
@@ -242,15 +234,10 @@ bool Citizen::citizenZombie(double dist_z)
         
         if(newDist < dist_z)
             return false;
-        //        std::cout << "HERE??" << std::endl;
-        //        if(newDist == 0.0) //no movement will be farther
-        //            return false;
-        
-        //        std::cout << "got here" << std::endl;
+ 
         setDirection(newDirection); //set the citizen to a new direction
         moveTo(citizenX, citizenY); //move citizen in that direction
-        //std::cout << "X " << getX() << " Y " << getY() << std::endl;
-        //std::cout << "X " << citizenX << " Y " << citizenY << std::endl;
+    
         return true;
     }
     else //no zombie within euclidean distance
@@ -269,7 +256,7 @@ void Citizen::doSomething()
         //m_infectCount++;
         if(getInfectCount() >= 500)
         {
-//            std::cout << "NOT " << std::endl;
+            //            std::cout << "NOT " << std::endl;
             //becomes a zombie
             Actor::setDead(); //set status to dead
             (getStud()) -> playSound(SOUND_ZOMBIE_BORN); //play sound
@@ -283,8 +270,6 @@ void Citizen::doSomething()
                 getStud()->addActor(new SmartZombie(getStud(), getX(), getY()));
             return;
         }
-        
-//        return; //??? NOT SURE IF THIS IS CORRECT?????
     }
     
     if(getStud()->getTicks() % 2 == 0) //even tick
@@ -302,8 +287,6 @@ void Citizen::doSomething()
     double dist_z = VIEW_HEIGHT;
     double zombieX = 0.0;
     double zombieY = 0.0;
-    //    double xPen = (getStud()->getPenelope())->getX();
-    //    double yPen = (getStud()->getPenelope())->getY();
     double tempX = getX();
     double tempY = getY();
     
@@ -313,7 +296,6 @@ void Citizen::doSomething()
     //dist_z (if not 256) will have distance to nearest zombie
     //dist_z means that there were no zombies
     
-   
     if((dist_p < dist_z || dist_z == VIEW_HEIGHT) && dist_p <=80) //no zombies on that level
     {
         //check Euclidean distance from penelope to citizen
@@ -325,14 +307,6 @@ void Citizen::doSomething()
             
             //check if can move 2 pixels in that direction
             newDirection(tempX, tempY, tempDir, 2);
-//            if(tempDir == right)
-//                tempX += 2;
-//            if (tempDir == left)
-//                tempX -= 2;
-//            if (tempDir == up)
-//                tempY += 2;
-//            if(tempDir == down)
-//                tempY-=2;
             
             //check if that temp is open
             if(getStud()->open(this, tempX, tempY))
@@ -371,26 +345,10 @@ void Citizen::doSomething()
                         default:
                             break;
                     }
-//                    if(tempDir == right)
-//                        tempDir = left;
-//                    if(tempDir == left)
-//                        tempDir = right;
-//                    if(tempDir == up)
-//                        tempDir = down;
-//                    if(tempDir == down)
-//                        tempDir = up;
-                    
+                
                     //check if can move 2 pixels in that NEW direction
                     newDirection(tempX, tempY, newTempDir, 2);
-//                    if(newTempDir == right)
-//                        tempX = getX() + 2;
-//                    if (newTempDir == left)
-//                        tempX = getX() - 2;
-//                    if (newTempDir == up)
-//                        tempY = getY() + 2;
-//                    if(newTempDir == down)
-//                        tempY = getY() - 2;
-                    
+                   
                     //check if that temp is open
                     if(getStud()->open(this, tempX, tempY))
                     {
@@ -506,7 +464,7 @@ void Penelope::doSomething()
             (getStud()) -> playSound(SOUND_PLAYER_DIE); //play sound
             return;
         }
-//        return; //??? NOT SURE IF THIS IS CORRECT?????
+        //        return; //??? NOT SURE IF THIS IS CORRECT?????
     }
     
     int keyVal;
@@ -567,26 +525,26 @@ void Penelope::doSomething()
                         double tempY = 0.0;
                         
                         newDirection(tempX, tempY, getDirection(), count*SPRITE_WIDTH);
-//                        if(getDirection() == up)
-//                        {
-//                            tempX = getX();
-//                            tempY = getY() + count * SPRITE_HEIGHT;
-//                        }
-//                        if(getDirection() == down)
-//                        {
-//                            tempX = getX();
-//                            tempY = getY() - count * SPRITE_HEIGHT;
-//                        }
-//                        if(getDirection() == left)
-//                        {
-//                            tempX = getX() - count *SPRITE_WIDTH;
-//                            tempY = getY();
-//                        }
-//                        if(getDirection() == right)
-//                        {
-//                            tempX = getX() + count *SPRITE_WIDTH;
-//                            tempY = getY();
-//                        }
+                        //                        if(getDirection() == up)
+                        //                        {
+                        //                            tempX = getX();
+                        //                            tempY = getY() + count * SPRITE_HEIGHT;
+                        //                        }
+                        //                        if(getDirection() == down)
+                        //                        {
+                        //                            tempX = getX();
+                        //                            tempY = getY() - count * SPRITE_HEIGHT;
+                        //                        }
+                        //                        if(getDirection() == left)
+                        //                        {
+                        //                            tempX = getX() - count *SPRITE_WIDTH;
+                        //                            tempY = getY();
+                        //                        }
+                        //                        if(getDirection() == right)
+                        //                        {
+                        //                            tempX = getX() + count *SPRITE_WIDTH;
+                        //                            tempY = getY();
+                        //                        }
                         //check if that temp location will overlap with wall or exit
                         //first create the new flames object
                         Flames *newFlame = new Flames(getStud(), tempX, tempY, up);
@@ -1017,17 +975,17 @@ void Zombie::doSomething()
         int vomitChance = randInt(1, 3);
         if(vomitChance == 1) //will only vomit if the random number is 1
         {
-        getStud()->addActor(temp);
-        getStud()->playSound(SOUND_ZOMBIE_VOMIT);
-        return;
+            getStud()->addActor(temp);
+            getStud()->playSound(SOUND_ZOMBIE_VOMIT);
+            return;
         }
         else
             delete temp;
     }
     else
         delete temp;
-
-
+    
+    
     //Step 4: Movement Plan (will be DIFFERENT for dumb and smart zombie)
     if(m_planDistance == 0)
         movementPlan(); //set new movement plan
@@ -1168,7 +1126,7 @@ void SmartZombie::movementPlan()
         
         double tempX = 0.0;
         double tempY = 0.0;
-
+        
         newDirection(tempX, tempY, tempDir, 1.0); //increment by 1
         if(getStud()->open(this, tempX, tempY)) //open space
         {
@@ -1186,5 +1144,5 @@ void SmartZombie::setDead()
 {
     Actor::setDead();
     getStud()->increaseScore(2000);
-        getStud()->playSound(SOUND_ZOMBIE_DIE);
+    getStud()->playSound(SOUND_ZOMBIE_DIE);
 }

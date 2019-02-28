@@ -205,11 +205,11 @@ string StudentWorld::statusLine()
     oss.fill('0');
     if(getScore() < 0)
     {
-         oss << "Score: -" << setw(5) << -1 * getScore() << "  ";
+        oss << "Score: -" << setw(5) << -1 * getScore() << "  ";
     }
     else
     {
-    oss << "Score: " << setw(6) << getScore() << "  ";
+        oss << "Score: " << setw(6) << getScore() << "  ";
     }
     oss << "Level: " << getLevel() << "  ";
     oss << "Lives: " << getLives() << "  ";
@@ -329,16 +329,16 @@ bool StudentWorld::overlapLiving(Actor *vomit)
             //since zombie is also a living actor, check if the object can exit
             if((*it)->getCanExit())
             {
-            //check if overlap
-            //overlap will return true
-            if(overlap(vomit, *it))
-            {
-                if(!(*it)->getInfectStat()) //only plays this sound once
-                    playSound(SOUND_CITIZEN_INFECTED);
-                (*it)->setInfectStat(true);
-                
-                return true; //there was overlap
-            }
+                //check if overlap
+                //overlap will return true
+                if(overlap(vomit, *it))
+                {
+                    if(!(*it)->getInfectStat()) //only plays this sound once
+                        playSound(SOUND_CITIZEN_INFECTED);
+                    (*it)->setInfectStat(true);
+                    
+                    return true; //there was overlap
+                }
             }
         }
     }
