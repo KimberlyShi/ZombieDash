@@ -31,15 +31,15 @@ void Actor::doSomething()
 }
 
 
-double Actor::getSpriteWidth() const
-{
-    return SPRITE_WIDTH;
-}
-
-double Actor::getSpriteHeight() const
-{
-    return SPRITE_HEIGHT;
-}
+//double Actor::getSpriteWidth() const
+//{
+//    return SPRITE_WIDTH;
+//}
+//
+//double Actor::getSpriteHeight() const
+//{
+//    return SPRITE_HEIGHT;
+//}
 
 bool Actor::getCanBlock() const
 {
@@ -288,8 +288,9 @@ void Citizen::doSomething()
         {
 //            std::cout << "NOT " << std::endl;
             //becomes a zombie
-            setDead(); //set status to dead
+            Actor::setDead(); //set status to dead
             (getStud()) -> playSound(SOUND_ZOMBIE_BORN); //play sound
+            getStud()->decCitizens();
             getStud()->increaseScore(-1000); //decrease player score
             
             int probability = randInt(1, 10);
@@ -300,7 +301,7 @@ void Citizen::doSomething()
             return;
         }
         
-        return; //??? NOT SURE IF THIS IS CORRECT?????
+//        return; //??? NOT SURE IF THIS IS CORRECT?????
     }
     
     if(getStud()->getTicks() % 2 == 0) //even tick
@@ -498,7 +499,7 @@ void Penelope::doSomething()
             (getStud()) -> playSound(SOUND_PLAYER_DIE); //play sound
             return;
         }
-        return; //??? NOT SURE IF THIS IS CORRECT?????
+//        return; //??? NOT SURE IF THIS IS CORRECT?????
     }
     
     int keyVal;
@@ -999,9 +1000,9 @@ void Zombie::doSomething()
     {
         return; //paralyzed
     }
-    
-    double tempVomitX = vomitX();
-    double tempVomitY = vomitY();
+//
+//    double tempVomitX = vomitX();
+//    double tempVomitY = vomitY();
     
     //Step 3: Direction + compute vomit coordinates
     //compute possible coordinates
@@ -1101,40 +1102,40 @@ void Zombie::decPlanDistance()
     m_planDistance--;
 }
 
-double Zombie::vomitX()
-{
-    double currentX = getX();
-    double newX = 0.0;
-    Direction temp = getDirection();
-    switch(temp)
-    {
-        case right:
-            newX = currentX + SPRITE_WIDTH;
-        case left:
-            newX = currentX - SPRITE_WIDTH;
-        default:
-            break;
-    }
-    return newX;
-}
-
-
-double Zombie::vomitY()
-{
-    double currentY = getY();
-    double newY = 0.0;
-    Direction temp = getDirection();
-    switch(temp)
-    {
-        case down:
-            newY = currentY + SPRITE_HEIGHT;
-        case up:
-            newY = currentY - SPRITE_HEIGHT;
-        default:
-            break;
-    }
-    return newY;
-}
+//double Zombie::vomitX()
+//{
+//    double currentX = getX();
+//    double newX = 0.0;
+//    Direction temp = getDirection();
+//    switch(temp)
+//    {
+//        case right:
+//            newX = currentX + SPRITE_WIDTH;
+//        case left:
+//            newX = currentX - SPRITE_WIDTH;
+//        default:
+//            break;
+//    }
+//    return newX;
+//}
+//
+//
+//double Zombie::vomitY()
+//{
+//    double currentY = getY();
+//    double newY = 0.0;
+//    Direction temp = getDirection();
+//    switch(temp)
+//    {
+//        case down:
+//            newY = currentY + SPRITE_HEIGHT;
+//        case up:
+//            newY = currentY - SPRITE_HEIGHT;
+//        default:
+//            break;
+//    }
+//    return newY;
+//}
 
 void Zombie::setPlanDistance(int set)
 {

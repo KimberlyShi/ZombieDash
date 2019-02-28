@@ -20,8 +20,8 @@ public:
     //make accessors to all the different ones
     int isAlive() const; //check status of alive
     StudentWorld *getStud() const;
-    double getSpriteWidth() const;
-    double getSpriteHeight() const;
+//    double getSpriteWidth() const;
+//    double getSpriteHeight() const;
     bool getCanBlock() const;
     bool finishedLevel() const; //true indicates that Penelope finished
     
@@ -266,8 +266,8 @@ public:
     Zombie(StudentWorld *stud, double locX, double locY);
     virtual ~Zombie();
     virtual void doSomething();
-    double vomitX();
-    double vomitY();
+//    double vomitX();
+//    double vomitY();
     //accessor
     int getPlanDistance() const;
     
