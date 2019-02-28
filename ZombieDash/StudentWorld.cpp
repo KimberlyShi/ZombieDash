@@ -72,9 +72,9 @@ int StudentWorld::init()
                     case Level::dumb_zombie:
                         actor.push_back(new DumbZombie(this, i*16, j*16));
                         break;
-                                            case Level::smart_zombie:
-                                                actor.push_back(new DumbZombie(this, i*16, j*16));
-                                                break;
+                    case Level::smart_zombie:
+                        actor.push_back(new DumbZombie(this, i*16, j*16));
+                        break;
                         
                     case Level::pit:
                         actor.push_back(new Pit(this, i*16, j*16));
@@ -203,7 +203,14 @@ string StudentWorld::statusLine()
     ostringstream oss;
     string str;
     oss.fill('0');
+    if(getScore() < 0)
+    {
+         oss << "Score: -" << setw(5) << -1 * getScore() << "  ";
+    }
+    else
+    {
     oss << "Score: " << setw(6) << getScore() << "  ";
+    }
     oss << "Level: " << getLevel() << "  ";
     oss << "Lives: " << getLives() << "  ";
     oss << "Vaccines: " << m_penelope->getVaccines() << "  ";

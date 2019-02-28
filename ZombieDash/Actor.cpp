@@ -983,6 +983,7 @@ void Zombie::doSomething()
     double tempVomitY = vomitY();
     
     //Step 3: Direction + compute vomit coordinates
+    //check direction of Person
     //Step 4: Movement Plan (will be DIFFERENT for dumb and smart zombie)
     if(m_planDistance == 0)
         movementPlan(); //set new movement plan
