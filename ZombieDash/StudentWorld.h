@@ -18,8 +18,8 @@ public:
     virtual void cleanUp();
     ~StudentWorld();
     bool open(Actor *sprite2, double x, double y); //check if proposed spot is open
-    bool boundingBox(Actor *sprite1, Actor *sprite2);
-    bool overlap(Actor *sprite1, Actor *sprite2); //check if the object is overlapping
+//    bool boundingBox(Actor *sprite1, Actor *sprite2);
+    bool overlap(Actor *sprite1, Actor *sprite2, int value); //check if the object is overlapping
     //overlap will return true if there is overlap
     
     void overlapExit(Actor *exit);
@@ -41,7 +41,7 @@ public:
     Penelope *getPenelope() const;
     int getTicks() const;
     
-    bool overlapCitizenPenelope(Actor *sprite1, Actor *sprite2);
+//    bool overlapCitizenPenelope(Actor *sprite1, Actor *sprite2);
     void newDirectionLess80(double x1, double y1, double x2, double y2, Direction &tempDir);
     
     int numCitizens() const;

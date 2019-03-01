@@ -106,8 +106,8 @@ public:
     
     
     //mutators
-    void moveX(int posNeg);
-    void moveY(int posNeg);
+//    void moveX(int posNeg);
+//    void moveY(int posNeg);
     bool isValid(double x, double y);
     void addFlames(int num);
     void addVaccines(int num);

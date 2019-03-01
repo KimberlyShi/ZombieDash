@@ -300,7 +300,8 @@ void Citizen::doSomething()
     {
         //check Euclidean distance from penelope to citizen
         //citizen wants to follow penelope
-        if(getStud()->overlapCitizenPenelope(this, getStud()->getPenelope()))
+//        if(getStud()->overlapCitizenPenelope(this, getStud()->getPenelope()))
+         if(getStud()->overlap(this, getStud()->getPenelope(), 80))
         {
             Direction tempDir = 0;
             getStud()->newDirectionLess80(getStud()->getPenelope()->getX(), getStud()->getPenelope()->getY(),getX(), getY(), tempDir);
@@ -645,7 +646,7 @@ void Exit::doSomething()
     //only when all citizens have left or died can penelope leave
     if (getStud()->numCitizens() == 0)
     {
-        if((getStud())->overlap(this, getStud()->getPenelope()))
+        if((getStud())->overlap(this, getStud()->getPenelope(), 10))
         {
             setfinishedLevelTrue();
             return;
@@ -681,7 +682,7 @@ void Goodies::checkOverlap()
     else
     {
         //the goodie does overlap with Penelope
-        if(getStud()->overlap(getStud()->getPenelope(), this))
+        if(getStud()->overlap(getStud()->getPenelope(), this, 10))
         {
             getStud()->increaseScore(50);
             this->setDead();

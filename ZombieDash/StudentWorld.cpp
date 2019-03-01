@@ -304,7 +304,7 @@ bool StudentWorld::open(Actor *sprite2, double x, double y)
 }
 
 //determine if object is overlap
-bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
+bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2, int value)
 {
     //find the center
     const double x1 = (*sprite1).getX() + SPRITE_WIDTH/2 - 1;
@@ -315,10 +315,25 @@ bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
     const double differenceY = y1 - y2;
     
     //(∆x)2 + (∆y)2 ≤ 10 //that means that there was overlap
-    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 10*10) //does overlap
+    if(((differenceX * differenceX) + (differenceY * differenceY)) <= value*value) //does overlap
         return true;
     return false;
 }
+//bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
+//{
+//    //find the center
+//    const double x1 = (*sprite1).getX() + SPRITE_WIDTH/2 - 1;
+//    const double y1 = (*sprite1).getY() + SPRITE_HEIGHT/2 -1;
+//    const double x2 = (*sprite2).getX() + SPRITE_WIDTH/2 -1;
+//    const double y2 = (*sprite2).getY() + SPRITE_HEIGHT/2 -1;
+//    const double differenceX = x1 - x2;
+//    const double differenceY = y1 - y2;
+//
+//    //(∆x)2 + (∆y)2 ≤ 10 //that means that there was overlap
+//    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 10*10) //does overlap
+//        return true;
+//    return false;
+//}
 
 bool StudentWorld::overlapLiving(Actor *vomit)
 {
@@ -331,7 +346,7 @@ bool StudentWorld::overlapLiving(Actor *vomit)
             {
                 //check if overlap
                 //overlap will return true
-                if(overlap(vomit, *it))
+                if(overlap(vomit, *it, 10))
                 {
                     if(!(*it)->getInfectStat()) //only plays this sound once
                         playSound(SOUND_CITIZEN_INFECTED);
@@ -344,7 +359,7 @@ bool StudentWorld::overlapLiving(Actor *vomit)
     }
     
     //check if overlap with penelope
-    if(overlap(vomit, m_penelope))
+    if(overlap(vomit, m_penelope, 10))
     {
         
         m_penelope->setInfectStat(true);
@@ -361,7 +376,7 @@ void StudentWorld::overlapExit(Actor *exit)
         {
             //check if overlap
             //overlap will return true
-            if(overlap(exit, *it))
+            if(overlap(exit, *it, 10))
             {
                 
                 (*it)->successExit();
@@ -383,7 +398,7 @@ void StudentWorld::overlapPit(Actor *pit)
         {
             //check if overlap
             //overlap will return true
-            if(overlap(pit, *it))
+            if(overlap(pit, *it, 10))
             {
                 (*it)->setDead();
             }
@@ -394,7 +409,7 @@ void StudentWorld::overlapPit(Actor *pit)
     {
         //check if overlap
         //overlap will return true
-        if(overlap(pit, m_penelope))
+        if(overlap(pit, m_penelope,10))
         {
             m_penelope->setDead();
         }
@@ -410,7 +425,7 @@ bool StudentWorld::overlapLandmine(Actor *mine)
         {
             //check if overlap
             //overlap will return true
-            if(overlap(mine, *it))
+            if(overlap(mine, *it, 10))
                 return true;
         }
     }
@@ -419,7 +434,7 @@ bool StudentWorld::overlapLandmine(Actor *mine)
     {
         //check if overlap
         //overlap will return true
-        if(overlap(mine, m_penelope))
+        if(overlap(mine, m_penelope, 10))
             return true;
     }
     return false;
@@ -434,7 +449,7 @@ bool StudentWorld::overlapFlames(Actor *posFlame)
         {
             //check if overlap
             //overlap will return true
-            if(overlap(posFlame, *it))
+            if(overlap(posFlame, *it, 10))
                 return true;
         }
     }
@@ -443,7 +458,7 @@ bool StudentWorld::overlapFlames(Actor *posFlame)
     {
         //check if overlap
         //overlap will return true
-        if(overlap(posFlame, m_penelope))
+        if(overlap(posFlame, m_penelope, 10))
             return true;
     }
     
@@ -458,7 +473,7 @@ void StudentWorld::flameDamages(Actor *flame)
         if((*it)->flameCanDamage())
         {
             //check if overlap
-            if(overlap(flame, *it)) //overlap will return true
+            if(overlap(flame, *it, 10)) //overlap will return true
             {
                 //do appropriate damages
                 //damages can happen to the following:
@@ -477,7 +492,7 @@ void StudentWorld::flameDamages(Actor *flame)
     if(m_penelope->flameCanDamage())
     {
         //check if overlap
-        if(overlap(flame, m_penelope)) //overlap will return true
+        if(overlap(flame, m_penelope, 10)) //overlap will return true
         {
             
             m_penelope->setDead(); //right now, working for goodies
@@ -565,22 +580,22 @@ void StudentWorld::closestPersonToZombie(double zombie1X, double zombie1Y, doubl
 }
 
 
-bool StudentWorld::overlapCitizenPenelope(Actor *sprite1, Actor *sprite2)
-{
-    //find the center
-    const double x1 = (*sprite1).getX() + SPRITE_WIDTH/2 - 1;
-    const double y1 = (*sprite1).getY() + SPRITE_HEIGHT/2 -1;
-    const double x2 = (*sprite2).getX() + SPRITE_WIDTH/2 -1;
-    const double y2 = (*sprite2).getY() + SPRITE_HEIGHT/2 -1;
-    const double differenceX = x1 - x2;
-    const double differenceY = y1 - y2;
-    
-    //(∆x)2 + (∆y)2 ≤ 80
-    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 80 * 80) //does overlap
-        return true;
-    return false;
-    //true means that the citizen wants to follow penelope
-}
+//bool StudentWorld::overlapCitizenPenelope(Actor *sprite1, Actor *sprite2)
+//{
+//    //find the center
+//    const double x1 = (*sprite1).getX() + SPRITE_WIDTH/2 - 1;
+//    const double y1 = (*sprite1).getY() + SPRITE_HEIGHT/2 -1;
+//    const double x2 = (*sprite2).getX() + SPRITE_WIDTH/2 -1;
+//    const double y2 = (*sprite2).getY() + SPRITE_HEIGHT/2 -1;
+//    const double differenceX = x1 - x2;
+//    const double differenceY = y1 - y2;
+//    
+//    //(∆x)2 + (∆y)2 ≤ 80
+//    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 80 * 80) //does overlap
+//        return true;
+//    return false;
+//    //true means that the citizen wants to follow penelope
+//}
 
 int StudentWorld::numCitizens() const
 {
