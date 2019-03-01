@@ -6,7 +6,6 @@
 #include <string>
 #include <list>
 
-// Students:  Add code to this file, StudentWorld.cpp, Actor.h, and Actor.cpp
 class Actor;
 
 class StudentWorld : public GameWorld
@@ -18,7 +17,6 @@ public:
     virtual void cleanUp();
     ~StudentWorld();
     bool open(Actor *sprite2, double x, double y); //check if proposed spot is open
-//    bool boundingBox(Actor *sprite1, Actor *sprite2);
     bool overlap(Actor *sprite1, Actor *sprite2, int value); //check if the object is overlapping
     //overlap will return true if there is overlap
     
@@ -37,11 +35,9 @@ public:
     
     void closestZombieToCitizen(double citizenX, double citizenY, double &zombieX, double &zombieY, double &distance);
     void closestPersonToZombie(double zombie1X, double zombie1Y, double &personX, double &personY, double &distance);
-    //accessor
+    
     Penelope *getPenelope() const;
     int getTicks() const;
-    
-//    bool overlapCitizenPenelope(Actor *sprite1, Actor *sprite2);
     void newDirectionLess80(double x1, double y1, double x2, double y2, Direction &tempDir);
     
     int numCitizens() const;

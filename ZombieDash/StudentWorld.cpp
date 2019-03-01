@@ -23,8 +23,7 @@ StudentWorld::~StudentWorld()
 
 StudentWorld::StudentWorld(string assetPath)
 : GameWorld(assetPath)
-{
-}
+{}
 
 int StudentWorld::init()
 {
@@ -49,10 +48,8 @@ int StudentWorld::init()
                 {
                     case Level::player:
                         m_penelope = new Penelope(this, i*16, j*16);
-                        //actor.push_back(m_penelope);
                         break;
                     case Level::wall:
-                        //m_wall = new Wall(this, i * 16, j *16);
                         actor.push_back(new Wall(this, i * 16, j *16));
                         break;
                     case Level::exit:
@@ -68,14 +65,12 @@ int StudentWorld::init()
                     case Level::vaccine_goodie:
                         actor.push_back(new VaccineGoodie(this, i*16, j*16));
                         break;
-                        
                     case Level::dumb_zombie:
                         actor.push_back(new DumbZombie(this, i*16, j*16));
                         break;
                     case Level::smart_zombie:
                         actor.push_back(new DumbZombie(this, i*16, j*16));
                         break;
-                        
                     case Level::pit:
                         actor.push_back(new Pit(this, i*16, j*16));
                         break;
@@ -96,17 +91,11 @@ int StudentWorld::init()
     }
     else
         return GWSTATUS_PLAYER_WON;
-    
-    //FIX: is there a max number of ticks
 }
 
 int StudentWorld::move()
 {
-    
     m_numTicks++;
-    // This code is here merely to allow the game to build, run, and terminate after you hit enter.
-    // Notice that the return value GWSTATUS_PLAYER_DIED will cause our framework to end the current level.
-    //list<Actor*>::iterator it;
     m_penelope->doSomething();
     for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
     {
@@ -141,7 +130,7 @@ void StudentWorld::cleanUp()
     }
     delete m_penelope;
 }
-//====accessor
+
 Penelope* StudentWorld::getPenelope() const
 {
     return m_penelope;
@@ -152,7 +141,6 @@ int StudentWorld::getTicks() const
     return m_numTicks;
 }
 
-//========
 void StudentWorld::cleanDead()
 {
     for ( list<Actor*>::iterator it = actor.begin(); it != actor.end();)
@@ -175,13 +163,11 @@ void StudentWorld::addActor(Actor *sprite)
 string StudentWorld::findLevel(int level)
 {
     ostringstream oss;
-    
     int numCoords = 0;
     int copyLevel = level;
     if(copyLevel/10 == 0)
         numCoords = 1;
     string str;
-    
     if(numCoords == 1)//need to append a '0'
     {
         oss.fill('0');
@@ -238,34 +224,22 @@ bool StudentWorld::open(Actor *sprite2, double x, double y)
             double secondyMin = (*it)->getY();
             double secondyMax = secondyMin + SPRITE_HEIGHT - 1;
             
-            //situation 1
-            if(firstxMin >= secondxMin && firstxMin <= secondxMax)
+            if(firstxMin >= secondxMin && firstxMin <= secondxMax) //situation 1
             {
-                //part a
-                if(firstyMin >= secondyMin && firstyMin <= secondyMax)
+                if(firstyMin >= secondyMin && firstyMin <= secondyMax) //part a
                     return false;
-                
-                //part b
-                if(firstyMax >= secondyMin && firstyMax <= secondyMax)
+                if(firstyMax >= secondyMin && firstyMax <= secondyMax) //part b
                     return false;
             }
-            
-            
-            //situation 2
-            if(firstxMax >= secondxMin && firstxMax <= secondxMax)
+            if(firstxMax >= secondxMin && firstxMax <= secondxMax) //situation 2
             {
-                //part a
-                if(firstyMin >= secondyMin && firstyMin <= secondyMax)
+                if(firstyMin >= secondyMin && firstyMin <= secondyMax) //part a
                     return false;
-                
-                //part b
-                if(firstyMax >= secondyMin && firstyMax <= secondyMax)
+                if(firstyMax >= secondyMin && firstyMax <= secondyMax) //part b
                     return false;
             }
         }
         it++;
-        
-        
     }
     
     if(sprite2 != m_penelope)
@@ -275,36 +249,26 @@ bool StudentWorld::open(Actor *sprite2, double x, double y)
         double secondxMax = secondxMin + SPRITE_WIDTH -1;
         double secondyMin = m_penelope->getY();
         double secondyMax = secondyMin + SPRITE_HEIGHT - 1;
-        //situation 1
-        if(firstxMin >= secondxMin && firstxMin <= secondxMax)
+        if(firstxMin >= secondxMin && firstxMin <= secondxMax)  //situation 1
         {
-            //part a
-            if(firstyMin >= secondyMin && firstyMin <= secondyMax)
+            if(firstyMin >= secondyMin && firstyMin <= secondyMax) //part a
                 return false;
-            
-            //part b
-            if(firstyMax >= secondyMin && firstyMax <= secondyMax)
+            if(firstyMax >= secondyMin && firstyMax <= secondyMax) //part b
                 return false;
         }
         
-        
-        //situation 2
-        if(firstxMax >= secondxMin && firstxMax <= secondxMax)
+        if(firstxMax >= secondxMin && firstxMax <= secondxMax) //situation 2
         {
-            //part a
-            if(firstyMin >= secondyMin && firstyMin <= secondyMax)
+            if(firstyMin >= secondyMin && firstyMin <= secondyMax) //part a
                 return false;
-            
-            //part b
-            if(firstyMax >= secondyMin && firstyMax <= secondyMax)
+            if(firstyMax >= secondyMin && firstyMax <= secondyMax) //part b
                 return false;
         }
     }
     return true;
 }
 
-//determine if object is overlap
-bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2, int value)
+bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2, int value) //determine if object is overlap
 {
     //find the center
     const double x1 = (*sprite1).getX() + SPRITE_WIDTH/2 - 1;
@@ -319,21 +283,6 @@ bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2, int value)
         return true;
     return false;
 }
-//bool StudentWorld::overlap(Actor *sprite1, Actor *sprite2)
-//{
-//    //find the center
-//    const double x1 = (*sprite1).getX() + SPRITE_WIDTH/2 - 1;
-//    const double y1 = (*sprite1).getY() + SPRITE_HEIGHT/2 -1;
-//    const double x2 = (*sprite2).getX() + SPRITE_WIDTH/2 -1;
-//    const double y2 = (*sprite2).getY() + SPRITE_HEIGHT/2 -1;
-//    const double differenceX = x1 - x2;
-//    const double differenceY = y1 - y2;
-//
-//    //(∆x)2 + (∆y)2 ≤ 10 //that means that there was overlap
-//    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 10*10) //does overlap
-//        return true;
-//    return false;
-//}
 
 bool StudentWorld::overlapLiving(Actor *vomit)
 {
@@ -341,17 +290,15 @@ bool StudentWorld::overlapLiving(Actor *vomit)
     {
         if((*it)->isLivingActor())
         {
-            //since zombie is also a living actor, check if the object can exit
-            if((*it)->getCanExit())
+            
+            if((*it)->getCanExit()) //since zombie is also a living actor, check if the object can exit
             {
-                //check if overlap
-                //overlap will return true
+                //check if overlap; overlap will return true
                 if(overlap(vomit, *it, 10))
                 {
                     if(!(*it)->getInfectStat()) //only plays this sound once
                         playSound(SOUND_CITIZEN_INFECTED);
                     (*it)->setInfectStat(true);
-                    
                     return true; //there was overlap
                 }
             }
@@ -361,7 +308,6 @@ bool StudentWorld::overlapLiving(Actor *vomit)
     //check if overlap with penelope
     if(overlap(vomit, m_penelope, 10))
     {
-        
         m_penelope->setInfectStat(true);
         return true; //there was overlap
     }
@@ -374,19 +320,10 @@ void StudentWorld::overlapExit(Actor *exit)
     {
         if((*it)->getCanExit())
         {
-            //check if overlap
-            //overlap will return true
-            if(overlap(exit, *it, 10))
-            {
-                
+            if(overlap(exit, *it, 10))  //overlap will return true
                 (*it)->successExit();
-                //  return true; //there was overlap
-            }
         }
     }
-    
-    //return false;
-    
 }
 void StudentWorld::overlapPit(Actor *pit)
 {
@@ -396,23 +333,15 @@ void StudentWorld::overlapPit(Actor *pit)
     {
         if((*it)->canActivateMine())
         {
-            //check if overlap
-            //overlap will return true
-            if(overlap(pit, *it, 10))
-            {
+            if(overlap(pit, *it, 10)) //overlap will return true
                 (*it)->setDead();
-            }
         }
     }
     
     if(m_penelope->canActivateMine())
     {
-        //check if overlap
-        //overlap will return true
-        if(overlap(pit, m_penelope,10))
-        {
+        if(overlap(pit, m_penelope,10)) //overlap will return true
             m_penelope->setDead();
-        }
     }
 }
 
@@ -423,18 +352,14 @@ bool StudentWorld::overlapLandmine(Actor *mine)
     {
         if((*it)->canActivateMine())
         {
-            //check if overlap
-            //overlap will return true
-            if(overlap(mine, *it, 10))
+            if(overlap(mine, *it, 10))   //overlap will return true
                 return true;
         }
     }
     
     if(m_penelope->canActivateMine())
     {
-        //check if overlap
-        //overlap will return true
-        if(overlap(mine, m_penelope, 10))
+        if(overlap(mine, m_penelope, 10))  //overlap will return true
             return true;
     }
     return false;
@@ -442,23 +367,18 @@ bool StudentWorld::overlapLandmine(Actor *mine)
 
 bool StudentWorld::overlapFlames(Actor *posFlame)
 {
-    //traverse through actor
-    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++) //traverse through actor
     {
         if((*it)->canBlockFlames()) //only wall or exit can block flames
         {
-            //check if overlap
-            //overlap will return true
-            if(overlap(posFlame, *it, 10))
+            if(overlap(posFlame, *it, 10)) //overlap will return true
                 return true;
         }
     }
     
     if(m_penelope->canBlockFlames()) //only wall or exit can block flames
     {
-        //check if overlap
-        //overlap will return true
-        if(overlap(posFlame, m_penelope, 10))
+        if(overlap(posFlame, m_penelope, 10)) //overlap will return true
             return true;
     }
     
@@ -467,43 +387,22 @@ bool StudentWorld::overlapFlames(Actor *posFlame)
 
 void StudentWorld::flameDamages(Actor *flame)
 {
-    //see if it overlaps and do damages accordingly
-    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
+    for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++) //see if it overlaps and do damages accordingly
     {
         if((*it)->flameCanDamage())
         {
-            //check if overlap
             if(overlap(flame, *it, 10)) //overlap will return true
-            {
-                //do appropriate damages
-                //damages can happen to the following:
-                //penelope --NOT tested
-                //zombies --NOT implemented
-                //goodies -- WORKS :)
-                //landmines -- NOT implemented
-                
-                (*it)->setDead(); //right now, working for goodies
-                
-                
-            }
+                (*it)->setDead();
         }
     }
     
     if(m_penelope->flameCanDamage())
     {
-        //check if overlap
         if(overlap(flame, m_penelope, 10)) //overlap will return true
-        {
-            
             m_penelope->setDead(); //right now, working for goodies
-            
-            
-        }
     }
 }
 
-
-//void StudentWorld::closestZombieToCitizen(Actor *citizen, double &zombieX, double &zombieY, double &distance)
 void StudentWorld::closestZombieToCitizen(double citizenX, double citizenY, double &zombieX, double &zombieY, double &distance)
 {
     double xDiff = 0.0;
@@ -512,8 +411,7 @@ void StudentWorld::closestZombieToCitizen(double citizenX, double citizenY, doub
     double tempDis = 0.0;
     for (list<Actor*>::iterator it = actor.begin(); it != actor.end(); it++)
     {
-        //shouldn't have to test for Penelope
-        if((*it)->isLivingActor())
+        if((*it)->isLivingActor()) //shouldn't have to test for Penelope
         {
             
             if(!((*it)->getCanExit())) //only zombie can't exit
@@ -522,9 +420,7 @@ void StudentWorld::closestZombieToCitizen(double citizenX, double citizenY, doub
                 yDiff = citizenY - (*it)->getY();
                 disSqared = (xDiff *xDiff) + (yDiff * yDiff);
                 tempDis = sqrt(disSqared);
-                //want to find the shortest distance
-                
-                if(tempDis < distance)
+                if(tempDis < distance)  //want to find the shortest distance
                 {
                     distance = tempDis;
                     zombieX = (*it)->getX();
@@ -545,16 +441,13 @@ void StudentWorld::closestPersonToZombie(double zombie1X, double zombie1Y, doubl
     {
         if((*it)->isLivingActor())
         {
-            
             if(((*it)->getCanExit())) //only citizens and Penelope can't exit
             {
                 xDiff = zombie1X - (*it)->getX();
                 yDiff = zombie1Y - (*it)->getY();
                 disSqared = (xDiff *xDiff) + (yDiff * yDiff);
                 tempDis = sqrt(disSqared);
-                //want to find the shortest distance
-                
-                if(tempDis < distance)
+                if(tempDis < distance)  //want to find the shortest distance
                 {
                     distance = tempDis;
                     personX = (*it)->getX();
@@ -579,24 +472,6 @@ void StudentWorld::closestPersonToZombie(double zombie1X, double zombie1Y, doubl
     }
 }
 
-
-//bool StudentWorld::overlapCitizenPenelope(Actor *sprite1, Actor *sprite2)
-//{
-//    //find the center
-//    const double x1 = (*sprite1).getX() + SPRITE_WIDTH/2 - 1;
-//    const double y1 = (*sprite1).getY() + SPRITE_HEIGHT/2 -1;
-//    const double x2 = (*sprite2).getX() + SPRITE_WIDTH/2 -1;
-//    const double y2 = (*sprite2).getY() + SPRITE_HEIGHT/2 -1;
-//    const double differenceX = x1 - x2;
-//    const double differenceY = y1 - y2;
-//    
-//    //(∆x)2 + (∆y)2 ≤ 80
-//    if(((differenceX * differenceX) + (differenceY * differenceY)) <= 80 * 80) //does overlap
-//        return true;
-//    return false;
-//    //true means that the citizen wants to follow penelope
-//}
-
 int StudentWorld::numCitizens() const
 {
     return m_citizens;
@@ -610,32 +485,19 @@ void StudentWorld::incCitizens()
     m_citizens++;
 }
 
-
-//=====
 void StudentWorld::newDirectionLess80(double x1, double y1, double x2, double y2, Direction &tempDir)
 {
     //x1 is the object that x2 is trying to get closer to
-    //check if in the same row OR same column
-    
     Direction tempXDir = -1;
     Direction tempYDir = -1;
     if(x1 - x2 < 0) //penelope on citizen's left
-    {
         tempXDir = Actor::left;
-    }
     if (x1 - x2 > 0)
-    {
         tempXDir = Actor::right;
-    }
     if(y1 - y2 < 0) //penelope below citizen
-    {
         tempYDir = Actor::down;
-    }
     if(y1 - y2 > 0)
-    {
         tempYDir = Actor::up;
-    }
-    
     
     if(x1 == x2 ||y1 == y2) //same row or column
     {
@@ -644,9 +506,7 @@ void StudentWorld::newDirectionLess80(double x1, double y1, double x2, double y2
         else
             tempDir = tempYDir;
     }
-    
-    //citizen is not on the same row or column
-    else
+    else //citizen is not on the same row or column
     {
         int choose = randInt(1, 2); //1 will be direction tempX
         //2 will be direction tempY

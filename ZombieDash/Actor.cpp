@@ -176,7 +176,7 @@ bool Citizen::citizenZombie(double dist_z)
         double upD = VIEW_HEIGHT;
         double downD = VIEW_HEIGHT;
         
-
+        
         //check if where want to move is open
         //check distance for each of them
         if(getStud()->open(this, getX() + 2, getY()))//right
@@ -228,10 +228,10 @@ bool Citizen::citizenZombie(double dist_z)
         
         if(newDist < dist_z)
             return false;
- 
+        
         setDirection(newDirection); //set the citizen to a new direction
         moveTo(citizenX, citizenY); //move citizen in that direction
-    
+        
         return true;
     }
     else //no zombie within euclidean distance
@@ -290,7 +290,7 @@ void Citizen::doSomething()
     {
         //check Euclidean distance from penelope to citizen
         //citizen wants to follow penelope
-         if(getStud()->overlap(this, getStud()->getPenelope(), 80))
+        if(getStud()->overlap(this, getStud()->getPenelope(), 80))
         {
             Direction tempDir = 0;
             getStud()->newDirectionLess80(getStud()->getPenelope()->getX(), getStud()->getPenelope()->getY(),getX(), getY(), tempDir);
@@ -333,10 +333,10 @@ void Citizen::doSomething()
                         default:
                             break;
                     }
-                
+                    
                     //check if can move 2 pixels in that NEW direction
                     newDirection(tempX, tempY, newTempDir, 2);
-                   
+                    
                     //check if that temp is open
                     if(getStud()->open(this, tempX, tempY))
                     {

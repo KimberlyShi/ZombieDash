@@ -1,12 +1,8 @@
 #ifndef ACTOR_H_
 #define ACTOR_H_
-
 #include "GraphObject.h"
-//TESTING TO SEE IF WILL SAVE NEW CHANGES
-// Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
 
-//need to declare the StudentWorld
-class StudentWorld;
+class StudentWorld; //need to declare the StudentWorld
 
 //base class
 class Actor: public GraphObject
@@ -20,37 +16,23 @@ public:
     //make accessors to all the different ones
     int isAlive() const; //check status of alive
     StudentWorld *getStud() const;
-    //    double getSpriteWidth() const;
-    //    double getSpriteHeight() const;
     bool getCanBlock() const;
     bool finishedLevel() const; //true indicates that Penelope finished
-    
-    //for flames damage
     bool canBlockFlames() const; //only wall or exit can block flames, true if can block
     void setActivation(); //will be called if the mine can be activated by that actor
     bool canActivateMine() const; //only zombie, penelope, and citizen will return true
     virtual void setFlameCanDamage(bool val); //mutator
     bool flameCanDamage() const; //accessor
-    
-    //mutators
     virtual void setDead();
     void setfinishedLevelTrue();
-    
     bool isLivingActor() const; //not to be confused with the status of isAlive()
     //isAlive() refers to whether or not the object is still valid
     //living actor: zombie, penelope, citizen AND dead actor is everything else
     void setLivingActor();
-    
     void canExitTrue(); //only can be called in Penelope and citizen
     bool getCanExit() const;
-    
     void newDirection(double &tempX, double &tempY, Direction tempDir, double value);
-    //        int numCitizens() const;
-    //    void decCitizens();
-    //    void incCitizens();
-    
     void successExit();
-    
     bool getInfectStat() const;
     int getInfectCount() const;
     void increaseInfectCount();
@@ -66,27 +48,14 @@ private:
     bool m_canActivateMine;
     bool m_canExit; //default false //only citizen and penelope can exit and return true
     bool m_live;
-    
     bool m_infectStat;
     int m_infectCount;
-    
-    //    int m_citizens;
 };
 //====HUMAN===
 class Human: public Actor
 {
 public:
-    //Penelope::Penelope(StudentWorld *stud, double locX, double locY)
-    // :Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
     Human(StudentWorld *stud, double locX, double locY, int imgid);
-    //    bool getInfectStat() const;
-    //    int getInfectCount() const;
-    //    void increaseInfectCount();
-    //    void setInfectStat(bool val);
-    
-private:
-    //    bool m_infectStat;
-    //    int m_infectCount;
 };
 //======PENLEOPE=============
 class Penelope: public Human
@@ -96,18 +65,9 @@ public:
     
     virtual ~Penelope();
     virtual void doSomething();
-    
-    //accessor
-    //    bool getInfectStat() const;
-    //    int getInfectCount() const;
     int getVaccines() const;
     int getMines() const;
     int getFlames() const;
-    
-    
-    //mutators
-//    void moveX(int posNeg);
-//    void moveY(int posNeg);
     bool isValid(double x, double y);
     void addFlames(int num);
     void addVaccines(int num);
@@ -119,8 +79,6 @@ public:
     //will NOT reset score
     
 private:
-    //    bool m_infectStat;
-    //    int m_infectCount;
     int m_vaccines;
     int m_mines;
     int m_flames;
@@ -137,11 +95,7 @@ public:
     Citizen(StudentWorld *stud, double locX, double locY);
     virtual void doSomething();
     virtual void setDead();
-    // bool tempPlace(double &tempX, double &tempY, Direction tempDir);
     bool citizenZombie(double dist_z); //false-if no zombies
-    //    void determineDirection(Direction &tempDir);
-    
-    
 };
 
 //=======WALL========================
@@ -171,8 +125,6 @@ public:
     virtual ~Goodies();
     virtual void doSomething();
     void checkOverlap();
-    
-    
     
 private:
     virtual void increaseGoodie() = 0;
@@ -213,7 +165,6 @@ private:
 //Bad Things: aka pits, vomit, flames===================
 class BadThings: public Actor
 {
-    //Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
 public:
     BadThings(StudentWorld *stud, double locX, double locY, int imgid, Direction dir);
     virtual void doSomething();
@@ -229,9 +180,6 @@ class Landmines: public BadThings
 public:
     Landmines(StudentWorld *stud, double locX, double locY);
     virtual void doSomething();
-    // virtual void setDead();
-    
-    
 private:
     bool m_inactiveState; //true if it's inactive
     int m_countdownTicks;
@@ -260,17 +208,12 @@ public:
     virtual void doSomething();
 };
 //======ZOMBIES YAYYY===
-//Actor(StudentWorld *stud, int locX, int locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
 class Zombie: public Actor
 {
 public:
     Zombie(StudentWorld *stud, double locX, double locY);
     virtual ~Zombie();
     virtual void doSomething();
-    //    double vomitX();
-    //    double vomitY();
-    //accessor
-    
     void randDirection();
     
     int getPlanDistance() const;
