@@ -159,8 +159,7 @@ Human::Human(StudentWorld *stud, double locX, double locY, int imgid)
 //CITIZEN=====
 Citizen::Citizen(StudentWorld *stud, double locX, double locY)
 :Human(stud, locX, locY, IID_CITIZEN)
-{
-}
+{}
 
 bool Citizen::citizenZombie(double dist_z)
 { //aka step 7 on pg 45 of spec
@@ -177,15 +176,11 @@ bool Citizen::citizenZombie(double dist_z)
         double upD = VIEW_HEIGHT;
         double downD = VIEW_HEIGHT;
         
-        
-        
+
         //check if where want to move is open
         //check distance for each of them
         if(getStud()->open(this, getX() + 2, getY()))//right
-        {
-            //closestZombieToCitizen will set rightD to the distance between citizen and the closest zombie
             getStud()->closestZombieToCitizen(getX() + 2,getY(), rx, ry, rightD);
-        }
         
         if(getStud()->open(this, getX() - 2, getY()))//left
             getStud()->closestZombieToCitizen(getX() - 2 ,getY(), rx, ry, leftD);
@@ -203,7 +198,6 @@ bool Citizen::citizenZombie(double dist_z)
         double citizenY = getY();
         Direction newDirection = right; //just initialize to right but that's just temporary
         
-        //std::cout << "BEFORE X " << citizenX << " Y " << citizenY << std::endl;
         if(rightD != VIEW_WIDTH && rightD > newDist && rightD > dist_z)
         {
             newDist = rightD;
@@ -251,13 +245,9 @@ void Citizen::doSomething()
     
     if(getInfectStat() == true) //if citizen is infected
     {
-        //she's infected so increase infection count
-        increaseInfectCount();
-        //m_infectCount++;
-        if(getInfectCount() >= 500)
+        increaseInfectCount(); //she's infected so increase infection count
+        if(getInfectCount() >= 500) //becomes a zombie
         {
-            //            std::cout << "NOT " << std::endl;
-            //becomes a zombie
             Actor::setDead(); //set status to dead
             (getStud()) -> playSound(SOUND_ZOMBIE_BORN); //play sound
             getStud()->decCitizens();
@@ -300,7 +290,6 @@ void Citizen::doSomething()
     {
         //check Euclidean distance from penelope to citizen
         //citizen wants to follow penelope
-//        if(getStud()->overlapCitizenPenelope(this, getStud()->getPenelope()))
          if(getStud()->overlap(this, getStud()->getPenelope(), 80))
         {
             Direction tempDir = 0;
@@ -320,10 +309,8 @@ void Citizen::doSomething()
             {
                 if(getX() == getStud()->getPenelope()->getX() || getY() == getStud()->getPenelope()->getY()) //check if same row/column
                 {
-                    
-                    //skip step 7
-                    citizenZombie(dist_z);
-                    return; //FIX
+                    citizenZombie(dist_z); //skip to step 7
+                    return;
                 }
                 else //not same row or column
                 {
@@ -359,8 +346,7 @@ void Citizen::doSomething()
                     }
                     else
                     {
-                        //skip to step 7
-                        citizenZombie(dist_z);
+                        citizenZombie(dist_z); //skip to step 7
                         return;
                     }
                     
@@ -384,34 +370,18 @@ void Citizen::setDead()
 
 //PENELOPE====
 Penelope::Penelope(StudentWorld *stud, double locX, double locY)
-//:Actor(stud, locX, locY, IID_PLAYER, 2, right, 0, 1, true, false)
 :Human(stud, locX, locY, IID_PLAYER)
 {
-    //    m_infectStat = false; //infection status starts off as false
-    //    m_infectCount = 0; //infection count is 0
     m_vaccines = 0;
     m_mines = 0;
     m_flames = 0;
     keyVal = 0;
     posNeg = 0;
     m_dir = right;
-    //    setFlameCanDamage(true); //can be damaged by flames
-    //    setActivation(); //can activate landmines
 }
 
 Penelope::~Penelope()
-{
-    
-}
-//Penelope's Accessors
-//bool Penelope::getInfectStat() const
-//{
-//    return m_infectStat;
-//}
-//int Penelope::getInfectCount() const
-//{
-//    return m_infectCount;
-//}
+{}
 
 int Penelope::getVaccines() const
 {
@@ -455,9 +425,7 @@ void Penelope::doSomething()
         return;
     if(getInfectStat() == true) //if she's infected
     {
-        //she's infected so increase infection count
-        increaseInfectCount();
-        //m_infectCount++;
+        increaseInfectCount();  //she's infected so increase infection count
         if(getInfectCount() >= 500)
         {
             //becomes a zombie
@@ -465,7 +433,6 @@ void Penelope::doSomething()
             (getStud()) -> playSound(SOUND_PLAYER_DIE); //play sound
             return;
         }
-        //        return; //??? NOT SURE IF THIS IS CORRECT?????
     }
     
     int keyVal;
@@ -526,34 +493,12 @@ void Penelope::doSomething()
                         double tempY = 0.0;
                         
                         newDirection(tempX, tempY, getDirection(), count*SPRITE_WIDTH);
-                        //                        if(getDirection() == up)
-                        //                        {
-                        //                            tempX = getX();
-                        //                            tempY = getY() + count * SPRITE_HEIGHT;
-                        //                        }
-                        //                        if(getDirection() == down)
-                        //                        {
-                        //                            tempX = getX();
-                        //                            tempY = getY() - count * SPRITE_HEIGHT;
-                        //                        }
-                        //                        if(getDirection() == left)
-                        //                        {
-                        //                            tempX = getX() - count *SPRITE_WIDTH;
-                        //                            tempY = getY();
-                        //                        }
-                        //                        if(getDirection() == right)
-                        //                        {
-                        //                            tempX = getX() + count *SPRITE_WIDTH;
-                        //                            tempY = getY();
-                        //                        }
                         //check if that temp location will overlap with wall or exit
                         //first create the new flames object
                         Flames *newFlame = new Flames(getStud(), tempX, tempY, up);
                         //check if it will overlap
-                        //  std::cout << "COUNTTT: " << count << " X: " << tempX << " Y: " << tempY << std::endl;
                         if(getStud()->overlapFlames(newFlame))//there was overlap
                         {
-                            // std::cout<< "COUNT " << count << std::endl;
                             delete newFlame; //make sure to delete that newFlame if not pushed
                             break;
                         }
@@ -596,8 +541,7 @@ void Penelope::doSomething()
 
 bool Penelope::isValid(double x, double y)
 {
-    //check that won't hit the border
-    if(x >= VIEW_WIDTH || x < 0 || y >= VIEW_HEIGHT || y <0)
+    if(x >= VIEW_WIDTH || x < 0 || y >= VIEW_HEIGHT || y <0) //check that won't hit the border
         return false;
     if(!getStud()->open(this,x, y))
         return false;
@@ -607,35 +551,27 @@ bool Penelope::isValid(double x, double y)
 void Penelope::setDead()
 {
     Actor::setDead();
-    //    getStud()->increaseScore(-1000); //decrease score by 1000
     getStud()->playSound(SOUND_PLAYER_DIE);
 }
 //=========WAll
 Wall::Wall(StudentWorld * stud, double locX, double locY)
 :Actor(stud, locX, locY, IID_WALL, 0, right, 0, 1, true, true)
-{
-}
+{}
 
 Wall::~Wall()
-{
-    
-}
+{}
 
 void Wall::doSomething()
-{
-    return;
-}
+{}
 
 //=========EXIT
 
 Exit::Exit(StudentWorld* stud,double locX, double locY)
 :Actor(stud, locX, locY, IID_EXIT, 0, right, 1, 1, false, true)
-{
-}
+{}
 
 Exit:: ~Exit()
-{
-}
+{}
 
 void Exit::doSomething()
 {
@@ -647,10 +583,7 @@ void Exit::doSomething()
     if (getStud()->numCitizens() == 0)
     {
         if((getStud())->overlap(this, getStud()->getPenelope(), 10))
-        {
             setfinishedLevelTrue();
-            return;
-        }
     }
 }
 
@@ -664,21 +597,16 @@ Goodies::Goodies(StudentWorld* stud, double locX, double locY, int imgid)
 }
 
 Goodies::~Goodies()
-{
-    
-}
+{}
 void Goodies::doSomething()
 {
     checkOverlap();
-    
 }
 
 void Goodies::checkOverlap()
 {
     if(isAlive() == 1) //not alive
-    {
         return;
-    }
     else
     {
         //the goodie does overlap with Penelope
@@ -687,7 +615,6 @@ void Goodies::checkOverlap()
             getStud()->increaseScore(50);
             this->setDead();
             getStud()-> playSound(SOUND_GOT_GOODIE);  //play sound
-            
             increaseGoodie();//in the virtual implementations, need to increase the respective number
             return;
         }
@@ -695,33 +622,27 @@ void Goodies::checkOverlap()
 }
 
 void Goodies::increaseGoodie()
-{
-    return;
-}
+{}
 
 VaccineGoodie::VaccineGoodie(StudentWorld* stud,double locX, double locY)
 :Goodies(stud, locX, locY, IID_VACCINE_GOODIE)
-{
-}
+{}
 
 VaccineGoodie::~VaccineGoodie()
-{
-}
+{}
+
 void VaccineGoodie::increaseGoodie()
 {
-    
     (getStud()->getPenelope())->addVaccines(1);
 }
 
 GasCanGoodie::GasCanGoodie(StudentWorld* stud, double locX, double locY)
 :Goodies(stud, locX, locY, IID_GAS_CAN_GOODIE)
-{
-    
-}
+{}
+
 GasCanGoodie::~GasCanGoodie()
-{
-    
-}
+{}
+
 void GasCanGoodie::increaseGoodie()
 {
     (getStud()->getPenelope())->addFlames(5);
@@ -729,21 +650,17 @@ void GasCanGoodie::increaseGoodie()
 
 LandmineGoodie::LandmineGoodie(StudentWorld* stud, double locX, double locY)
 :Goodies(stud, locX, locY, IID_LANDMINE_GOODIE)
-{
-    
-}
+{}
+
 LandmineGoodie::~LandmineGoodie()
-{
-    
-}
+{}
+
 void LandmineGoodie::increaseGoodie()
 {
     (getStud()->getPenelope())->addMines(2);
-    //Penelope::addMines(2);
 }
-//Bad Things: aka Vomit, Pit, Flames
-//Actor(StudentWorld *stud, double locX, double locY, int imgid, int statAlive, Direction dir, int depth, int size, bool canBlock);
 
+//Bad Things: aka Vomit, Pit, Flames====================================
 BadThings::BadThings(StudentWorld *stud, double locX, double locY, int imgid, Direction dir)
 :Actor(stud, locX, locY, imgid, 2, dir, 0, 1, false, false)
 {
@@ -752,12 +669,10 @@ BadThings::BadThings(StudentWorld *stud, double locX, double locY, int imgid, Di
 }
 
 void BadThings::doSomething()
-{
-    
-}
+{}
+
 void BadThings::startTick()
 {
-    // return m_currentTick;
     m_startTick = (getStud())->getTicks();
 }
 int BadThings::getStartTick() const
@@ -804,9 +719,7 @@ void Landmines::doSomething()
                 getStud()->addActor(new Flames(getStud(), getX(), getY(), right));
                 
                 
-                //will only display the flame if it doesn't overlap with anything
-                //8 flame objects
-                
+                //8 flames: will only display the flame if it doesn't overlap with anything
                 double tempX = 0.0;
                 double tempY = 0.0;
                 for(int i = 0; i < 8; i++)
@@ -855,17 +768,11 @@ void Landmines::doSomething()
                     //need to see if the tempX and tempY will overlap with wall or exit
                     Flames *temp = new Flames(getStud(), tempX, tempY, right);
                     if(getStud()->overlapFlames(temp))
-                    {
-                        //if there is overlap, will have to delete that temp flame
-                        delete temp;
-                    }
+                        delete temp; //if there is overlap, will have to delete that temp flame
                     else
-                    {
                         getStud()->addActor(temp);
-                    }
                 }
-                //introduce pit where the landmine was
-                getStud()->addActor(new Pit(getStud(), getX(), getY()));
+                getStud()->addActor(new Pit(getStud(), getX(), getY())); //introduce pit where the landmine was
             }
         }
     }
@@ -873,37 +780,25 @@ void Landmines::doSomething()
 
 Pit::Pit(StudentWorld *stud, double locX, double locY)
 :BadThings(stud, locX, locY, IID_PIT, right)
-{
-    
-}
+{}
 
 void Pit::doSomething()
 {
     getStud()->overlapPit(this);
-    
 }
 
 Vomit::Vomit(StudentWorld *stud, double locX, double locY, Direction dir)
 :BadThings(stud, locX, locY, IID_VOMIT, dir)
-{
-    
-}
+{}
 
 void Vomit::doSomething()
 {
     if(isAlive() == 1) //vomit is already dead
         return;
-    //set the currentTick if not already
-    if(getStartTick() == 0)
+    if(getStartTick() == 0) //set the currentTick if not already
         startTick();
-    //check if there has been 2 ticks since creation
-    if(getStud()->getTicks() - getStartTick() == 2)
-    {
-        //set state to dead
-        setDead();
-        return;
-    }
-    
+    if(getStud()->getTicks() - getStartTick() == 2) //check if there has been 2 ticks since creation
+        setDead(); //set state to dead
 }
 
 Flames::Flames(StudentWorld *stud, double locX, double locY, Direction dir)
@@ -916,19 +811,14 @@ void Flames::doSomething()
 {
     if(isAlive() == 1) //flame is already dead
         return;
-    //set the currentTick if not already
-    if(getStartTick() == 0)
+    if(getStartTick() == 0)  //set the currentTick if not already
         startTick();
-    //check if there has been 2 ticks since creation
-    if(getStud()->getTicks() - getStartTick() == 2)
+    if(getStud()->getTicks() - getStartTick() == 2) //check if there has been 2 ticks since creation
     {
-        //set state to dead
-        setDead();
+        setDead(); //set state to dead
         return;
     }
-    
-    //see what damages are done
-    getStud()->flameDamages(this);
+    getStud()->flameDamages(this); //see what damages are done
 }
 
 //ZOMBIE TIME YAY===========================================================
@@ -942,24 +832,17 @@ Zombie::Zombie(StudentWorld *stud, double locX, double locY)
 }
 
 Zombie::~Zombie()
-{
-}
+{}
 void Zombie::setDead() {}
 
 void Zombie::doSomething()
 {
     //Step 1: check if alive
     if(isAlive() == 1) //not alive
-    {
         return;
-    }
-    
     //Step 2: Paralyzed
     if(getStud()->getTicks() % 2 == 0) //even tick
-    {
         return; //paralyzed
-    }
-    
     //Step 3: Direction + compute vomit coordinates
     //compute possible coordinates
     //check direction of Person
@@ -986,17 +869,13 @@ void Zombie::doSomething()
     else
         delete temp;
     
-    
     //Step 4: Movement Plan (will be DIFFERENT for dumb and smart zombie)
     if(m_planDistance == 0)
         movementPlan(); //set new movement plan
-    
     //Step 5: destination coordinate
     double tempX = 0.0;
     double tempY = 0.0;
-    
     newDirection(tempX, tempY, getDirection(), 1);
-    
     //Step 6: check bounding box and update location if applicable
     if(getStud()->open(this, tempX, tempY)) //FIX
     {
@@ -1006,7 +885,6 @@ void Zombie::doSomething()
     //Step 7: can't actually move case
     else //bounding box is overlapped so need to pick new direction
         m_planDistance = 0;
-    
 }
 
 //accessor
@@ -1027,10 +905,7 @@ void Zombie::setPlanDistance(int set)
 }
 
 void Zombie::movementPlan()
-{
-    //Note: to set direction, use GraphObject's setDirection
-    return;
-}
+{}
 
 void Zombie::randDirection()
 {
@@ -1047,17 +922,13 @@ void Zombie::randDirection()
 
 DumbZombie::DumbZombie(StudentWorld *stud,double locX, double locY)
 :Zombie(stud, locX, locY)
-{
-}
+{}
 
 DumbZombie::~DumbZombie()
-{
-    
-}
+{}
 
 void DumbZombie::movementPlan()
 {
-    
     int newMove = randInt(3, 10);
     setPlanDistance(newMove);
     randDirection();
@@ -1068,27 +939,17 @@ void DumbZombie::setDead()
     Actor::setDead();
     getStud()->increaseScore(1000);
     getStud()->playSound(SOUND_ZOMBIE_DIE);
-    
-    //1 in 10 dumb zombies are mindlessly carrying a vaccine goodie
-    int random = randInt(1, 10);
+    int random = randInt(1, 10); //1 in 10 dumb zombies are mindlessly carrying a vaccine goodie
     
     if(random == 1) //has vaccine goodie
     {
-        //choose a random direction
-        randDirection();
+        randDirection(); //choose a random direction
         double tempX = 0.0;
         double tempY = 0.0;
         newDirection(tempX, tempY, getDirection(), SPRITE_WIDTH);
-        
-        //create a temp new vaccine goodie
-        VaccineGoodie *temp = new VaccineGoodie(getStud(), tempX, tempY);
-        
-        //check if that spot is open
-        if(getStud()->open(temp, tempX, tempY))
-        {
-            //open so will fling the vaccineGoodie
-            getStud()->addActor(temp);
-        }
+        VaccineGoodie *temp = new VaccineGoodie(getStud(), tempX, tempY); //create a temp new vaccine goodie
+        if(getStud()->open(temp, tempX, tempY)) //check if that spot is open
+            getStud()->addActor(temp); //open so will fling the vaccineGoodie
         else
             delete temp;
     }
@@ -1096,14 +957,10 @@ void DumbZombie::setDead()
 
 SmartZombie::SmartZombie(StudentWorld *stud, double locX, double locY)
 :Zombie(stud, locX, locY)
-{
-    
-}
+{}
 
 SmartZombie::~SmartZombie()
-{
-    
-}
+{}
 
 void SmartZombie::movementPlan()
 {
@@ -1112,13 +969,8 @@ void SmartZombie::movementPlan()
     double personY = 0.0;
     double distance = 0.0;
     getStud()->closestPersonToZombie(this->getX(), this->getY(), personX, personY, distance);
-    
-    
     if(distance >80)
-    {
-        //choose a random direction
-        randDirection();
-    }
+        randDirection(); //choose a random direction
     else
     {
         Direction tempDir = 0;
@@ -1135,9 +987,7 @@ void SmartZombie::movementPlan()
             decPlanDistance();
         }
         else
-        {
             setPlanDistance(0); //have to set plan to 0 to restart
-        }
     }
 }
 
