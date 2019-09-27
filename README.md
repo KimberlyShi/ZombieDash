@@ -7,5 +7,5 @@ Although all the zombies look the same, some zombies are smart and will try to m
 WEAPONS
 Penelope can collect landmines and deploy those landmines. If anything steps on the landmine, then it will explode. Penelope can also collect fuel and use a flame thrower to kill zombies but can also accidentally kill citizens. These flames can also be used to activate a landmine from a distance. After the landmines explode, a pit forms and anything that steps in a pit will also die.
 
-
+![alt text](example.png)
 
